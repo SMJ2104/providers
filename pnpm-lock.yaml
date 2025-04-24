@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      abort-controller:
+        specifier: ^3.0.0
+        version: 3.0.0
       cheerio:
         specifier: 1.0.0-rc.12
         version: 1.0.0-rc.12
@@ -41,6 +44,9 @@ importers:
       unpacker:
         specifier: ^1.0.1
         version: 1.0.1
+      wyzie-lib:
+        specifier: ^2.2.1
+        version: 2.2.1
     devDependencies:
       '@nabla/vite-plugin-eslint':
         specifier: ^2.0.5
@@ -683,6 +689,10 @@ packages:
   '@vue/shared@3.5.13':
     resolution: {integrity: sha512-/hnE/qP5ZoGpol0a5mDi45bOd7t3tjYJBjsgCsivow7D48cJeV5l05RD82lPqi7gRiphZM37rnhW1l6ZoCNNnQ==}
 
+  abort-controller@3.0.0:
+    resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
+    engines: {node: '>=6.5'}
+
   acorn-jsx@5.3.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
     peerDependencies:
@@ -1254,6 +1264,10 @@ packages:
   esutils@2.0.3:
     resolution: {integrity: sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g==}
     engines: {node: '>=0.10.0'}
+
+  event-target-shim@5.0.1:
+    resolution: {integrity: sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==}
+    engines: {node: '>=6'}
 
   execa@8.0.1:
     resolution: {integrity: sha512-VyhnebXciFV2DESc+p6B+y0LjSm0krU4OgJN44qFAhBY0TJ+1V61tYD2+wHusZ6F9n5K+vl8k0sTy7PEfV4qpg==}
@@ -2525,6 +2539,9 @@ packages:
       utf-8-validate:
         optional: true
 
+  wyzie-lib@2.2.1:
+    resolution: {integrity: sha512-oZtJnCTQCqLZimlD1Ex195+8e21/G5BWhixCE5/4Of77AI9igmIQCo/thWngOsdOufcnzvzTPYkWoNDxHc5lQg==}
+
   y18n@5.0.8:
     resolution: {integrity: sha512-0pfFzegeDWJHJIAmTLRP2DwHjdF5s7jo9tuztdQxAhINCdvS+3nGINqPd00AphqJR/0LhANUS6/+7SCb98YOfA==}
     engines: {node: '>=10'}
@@ -3104,6 +3121,10 @@ snapshots:
       typescript: 5.7.3
 
   '@vue/shared@3.5.13': {}
+
+  abort-controller@3.0.0:
+    dependencies:
+      event-target-shim: 5.0.1
 
   acorn-jsx@5.3.2(acorn@8.14.0):
     dependencies:
@@ -3827,6 +3848,8 @@ snapshots:
       '@types/estree': 1.0.6
 
   esutils@2.0.3: {}
+
+  event-target-shim@5.0.1: {}
 
   execa@8.0.1:
     dependencies:
@@ -5224,6 +5247,8 @@ snapshots:
   wrappy@1.0.2: {}
 
   ws@8.18.0: {}
+
+  wyzie-lib@2.2.1: {}
 
   y18n@5.0.8: {}
 

@@ -13,18 +13,16 @@ export async function addWyzieCaptions(
   try {
     const searchParams: any = {
       format: 'srt',
+      encoding: 'utf-8',
     };
 
     // Prefer TMDB ID if available, otherwise use IMDB ID
     if (tmdbId) {
-      // Convert TMDB ID to number if it's a string
       searchParams.tmdb_id = typeof tmdbId === 'string' ? parseInt(tmdbId, 10) : tmdbId;
     } else if (imdbId) {
-      // Remove 'tt' prefix from IMDB ID if present
-      searchParams.imdb_id = imdbId.replace(/^tt/, '');
+      searchParams.imdb_id = imdbId;
     }
 
-    // Add season and episode if provided (for TV shows)
     if (season && episode) {
       searchParams.season = season;
       searchParams.episode = episode;
