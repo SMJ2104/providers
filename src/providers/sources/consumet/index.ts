@@ -9,7 +9,7 @@ async function consumetScraper(ctx: ShowScrapeContext): Promise<SourcererOutput>
   const searchQuery = ctx.media.title;
   const page = 1;
 
-  const searchUrl = `https://consumet.pstream.org/anime/zoro/${encodeURIComponent(searchQuery)}?page=${page}`;
+  const searchUrl = `https://cors.samj.app/?destination=https://consumet.pstream.org/anime/zoro/${encodeURIComponent(searchQuery)}?page=${page}`;
   const searchResponse = await ctx.fetcher<SearchResponse>(searchUrl);
 
   if (!searchResponse?.results?.length) {
@@ -65,7 +65,7 @@ async function consumetScraper(ctx: ShowScrapeContext): Promise<SourcererOutput>
 
 export const ConsumetScraper = makeSourcerer({
   id: 'consumet',
-  name: 'Consumet (Anime)',
+  name: 'Consumet (Anime) 🔰',
   rank: 4,
   flags: [flags.CORS_ALLOWED],
   scrapeShow: consumetScraper,
