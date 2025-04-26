@@ -6,6 +6,7 @@ import { NotFoundError } from '@/utils/errors';
 const foxBaseUrl = 'https://xprime.tv/foxtemp';
 const apolloBaseUrl = 'https://kendrickl-3amar.site';
 const showboxBaseUrl = 'https://xprime.tv/primebox';
+const marantBaseUrl = 'https://backend.xprime.tv/marant';
 
 const languageMap: Record<string, string> = {
   'chinese - hong kong': 'zh',
@@ -30,7 +31,7 @@ const languageMap: Record<string, string> = {
   'spanish - european': 'es',
   'spanish - latin american': 'es',
   swedish: 'sv',
-  turkish: 'tr', 
+  turkish: 'tr',
   اَلْعَرَبِيَّةُ: 'ar',
   বাংলা: 'bn',
   filipino: 'tl',
@@ -41,7 +42,7 @@ const languageMap: Record<string, string> = {
 export const xprimeFoxEmbed = makeEmbed({
   id: 'xprime-fox',
   name: 'Fox',
-  rank: 240,
+  rank: 241,
   async scrape(ctx): Promise<EmbedOutput> {
     const query = JSON.parse(ctx.url);
     const params = new URLSearchParams({
@@ -84,9 +85,8 @@ export const xprimeFoxEmbed = makeEmbed({
 
 export const xprimeApolloEmbed = makeEmbed({
   id: 'xprime-apollo',
-  name: 'Apollo',
-  disabled: true,
-  rank: 242,
+  name: 'Appolo',
+  rank: 243,
   async scrape(ctx): Promise<EmbedOutput> {
     const query = JSON.parse(ctx.url);
     let url = `${apolloBaseUrl}/${query.tmdbId}`;
@@ -95,13 +95,7 @@ export const xprimeApolloEmbed = makeEmbed({
       url += `/${query.season}/${query.episode}`;
     }
 
-    const data = await ctx.proxiedFetcher(url, {
-      baseUrl: apolloBaseUrl,
-      headers: {
-        Referer: `https://pstream.org`,
-        Origin: `https://pstream.org`,
-      },
-    });
+    const data = await ctx.fetcher(url);
 
     if (!data) throw new NotFoundError('No response received');
     if (data.error) throw new NotFoundError(data.error);
@@ -121,9 +115,17 @@ export const xprimeApolloEmbed = makeEmbed({
         {
           type: 'hls',
           id: 'primary',
-          playlist: `https://proxy.fifthwit.net/m3u8-proxy?url=${encodeURIComponent(data.url)}&headers=${encodeURIComponent(JSON.stringify({ referer: 'https://pstream.org/', origin: 'https://pstream.org' }))}`,
+          playlist: data.url,
           flags: [flags.CORS_ALLOWED],
           captions,
+          ...(data.thumbnails?.file
+            ? {
+                thumbnailTrack: {
+                  type: 'vtt',
+                  url: data.thumbnails.file,
+                },
+              }
+            : {}),
         },
       ],
     };
@@ -133,7 +135,7 @@ export const xprimeApolloEmbed = makeEmbed({
 export const xprimeStreamboxEmbed = makeEmbed({
   id: 'xprime-streambox',
   name: 'Streambox',
-  rank: 241,
+  rank: 242,
   async scrape(ctx): Promise<EmbedOutput> {
     const query = JSON.parse(ctx.url);
     let url = showboxBaseUrl;
@@ -191,6 +193,40 @@ export const xprimeStreamboxEmbed = makeEmbed({
           },
           type: 'file',
           flags: [flags.CORS_ALLOWED],
+        },
+      ],
+    };
+  },
+});
+
+export const xprimeMarantEmbed = makeEmbed({
+  id: 'xprime-marant',
+  name: 'Marant',
+  rank: 240,
+  async scrape(ctx): Promise<EmbedOutput> {
+    const query = JSON.parse(ctx.url);
+    let url = `${marantBaseUrl}?id=${query.tmdbId}`;
+
+    if (query.type === 'show') {
+      url += `&season=${query.season}&episode=${query.episode}`;
+    }
+
+    const data = await await ctx.fetcher(url);
+
+    if (!data) throw new NotFoundError('No response received');
+    if (data.error) throw new NotFoundError(data.error);
+    if (!data.url) throw new NotFoundError('No stream URL found in response');
+
+    ctx.progress(90);
+
+    return {
+      stream: [
+        {
+          type: 'hls',
+          id: 'primary',
+          playlist: data.url,
+          flags: [flags.CORS_ALLOWED],
+          captions: [],
         },
       ],
     };
