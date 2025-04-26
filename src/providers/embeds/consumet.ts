@@ -89,7 +89,7 @@ function embed(provider: { id: string; rank: number; name: string; server: strin
     disabled: provider.disabled,
     async scrape(ctx): Promise<EmbedOutput> {
       const query = JSON.parse(ctx.url);
-      const apiUrl = `https://consumet.pstream.org/anime/zoro/watch?episodeId=${query.episodeId}&server=${provider.server}`;
+      const apiUrl = `https://cors.samj.app/?destination=https://consumet.pstream.org/anime/zoro/watch?episodeId=${query.episodeId}&server=${provider.server}`;
 
       const data = await ctx.fetcher<StreamData>(apiUrl);
 
