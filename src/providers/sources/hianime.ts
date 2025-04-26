@@ -26,7 +26,7 @@ interface HianimeEpisodeResult {
 }
 
 async function searchAnime(title: string): Promise<string> {
-  const response = await fetch(`https://hianime.pstream.org/api/v2/hianime/search?q=${encodeURIComponent(title)}`);
+  const response = await fetch(`https://cors.samj.app/?destination=https://hianime.pstream.org/api/v2/hianime/search?q=${encodeURIComponent(title)}`);
   if (!response.ok) throw new Error('Failed to search anime');
   const data: HianimeSearchResult = await response.json();
 
@@ -66,7 +66,7 @@ async function calculateAbsoluteEpisodeNumber(
 }
 
 async function fetchEpisodeData(animeId: string): Promise<HianimeEpisodeResult> {
-  const response = await fetch(`https://hianime.pstream.org/api/v2/hianime/anime/${animeId}/episodes`);
+  const response = await fetch(`https://cors.samj.app/?destination=https://hianime.pstream.org/api/v2/hianime/anime/${animeId}/episodes`);
   if (!response.ok) throw new NotFoundError('Failed to fetch episode data');
   return response.json();
 }
