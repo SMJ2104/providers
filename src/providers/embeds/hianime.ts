@@ -8,7 +8,7 @@ export const hianimeHd1DubEmbed = makeEmbed({
   rank: 250,
   async scrape(ctx): Promise<EmbedOutput> {
     const query = JSON.parse(ctx.url);
-    const url = `https://hianime.pstream.org/api/v2/hianime/episode/sources?animeEpisodeId=${query.episodeId}&server=hd-1&category=dub`;
+    const url = `https://cors.samj.app/?destination=https://hianime.pstream.org/api/v2/hianime/episode/sources?animeEpisodeId=${query.episodeId}&server=hd-1&category=dub`;
 
     const data = await ctx.fetcher(url);
     if (!data) throw new NotFoundError('No response received');
@@ -44,7 +44,7 @@ export const hianimeHd2DubEmbed = makeEmbed({
   rank: 251,
   async scrape(ctx): Promise<EmbedOutput> {
     const query = JSON.parse(ctx.url);
-    const url = `https://hianime.pstream.org/api/v2/hianime/episode/sources?animeEpisodeId=${query.episodeId}&server=hd-2&category=dub`;
+    const url = `https://cors.samj.app/?destination=https://hianime.pstream.org/api/v2/hianime/episode/sources?animeEpisodeId=${query.episodeId}&server=hd-2&category=dub`;
 
     const data = await ctx.fetcher(url);
     if (!data) throw new NotFoundError('No response received');
@@ -80,7 +80,7 @@ export const hianimeHd1SubEmbed = makeEmbed({
   rank: 252,
   async scrape(ctx): Promise<EmbedOutput> {
     const query = JSON.parse(ctx.url);
-    const url = `https://hianime.pstream.org/api/v2/hianime/episode/sources?animeEpisodeId=${query.episodeId}&server=hd-1&category=sub`;
+    const url = `https://cors.samj.app/?destination=https://hianime.pstream.org/api/v2/hianime/episode/sources?animeEpisodeId=${query.episodeId}&server=hd-1&category=sub`;
 
     const data = await ctx.fetcher(url);
     if (!data) throw new NotFoundError('No response received');
@@ -116,7 +116,7 @@ export const hianimeHd2SubEmbed = makeEmbed({
   rank: 253,
   async scrape(ctx): Promise<EmbedOutput> {
     const query = JSON.parse(ctx.url);
-    const url = `https://hianime.pstream.org/api/v2/hianime/episode/sources?animeEpisodeId=${query.episodeId}&server=hd-2&category=sub`;
+    const url = `https://cors.samj.app/?destination=https://hianime.pstream.org/api/v2/hianime/episode/sources?animeEpisodeId=${query.episodeId}&server=hd-2&category=sub`;
 
     const data = await ctx.fetcher(url);
     if (!data) throw new NotFoundError('No response received');
