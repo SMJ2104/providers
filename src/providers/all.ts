@@ -1,29 +1,21 @@
 import { Embed, Sourcerer } from '@/providers/base';
 import { doodScraper } from '@/providers/embeds/dood';
-import { mixdropScraper } from '@/providers/embeds/mixdrop';
 import {
-  riveAsiacloudScraper,
-  riveEe3Scraper,
-  riveFastxScraper,
-  riveFilmechoScraper,
-  riveG1Scraper,
-  riveG2Scraper,
-  riveGhostScraper,
-  riveGuruScraper,
-  riveHydraxScraper,
-  riveKageScraper,
-  riveNovaScraper,
-  rivePutafilmeScraper,
-} from '@/providers/embeds/rive';
+  hianimeHd1DubEmbed,
+  hianimeHd1SubEmbed,
+  hianimeHd2DubEmbed,
+  hianimeHd2SubEmbed,
+} from '@/providers/embeds/hianime';
+import { mixdropScraper } from '@/providers/embeds/mixdrop';
 import { turbovidScraper } from '@/providers/embeds/turbovid';
 import { upcloudScraper } from '@/providers/embeds/upcloud';
 import { autoembedScraper } from '@/providers/sources/autoembed';
 import { catflixScraper } from '@/providers/sources/catflix';
 import { ee3Scraper } from '@/providers/sources/ee3';
 import { fsharetvScraper } from '@/providers/sources/fsharetv';
+import { hianimeScraper } from '@/providers/sources/hianime';
 import { insertunitScraper } from '@/providers/sources/insertunit';
 import { mp4hydraScraper } from '@/providers/sources/mp4hydra';
-import { riveScraper } from '@/providers/sources/rive';
 import { tugaflixScraper } from '@/providers/sources/tugaflix';
 import { vidsrcsuScraper } from '@/providers/sources/vidsrcsu';
 
@@ -35,6 +27,12 @@ import {
   autoembedTeluguScraper,
 } from './embeds/autoembed';
 import { closeLoadScraper } from './embeds/closeload';
+import {
+  ConsumetStreamSBScraper,
+  ConsumetStreamTapeScraper,
+  ConsumetVidCloudScraper,
+  ConsumetVidStreamingScraper,
+} from './embeds/consumet';
 import { FedAPIPrivateScraper, FedDBScraper } from './embeds/fedapi';
 import { mp4hydraServer1Scraper, mp4hydraServer2Scraper } from './embeds/mp4hydra';
 import { ridooScraper } from './embeds/ridoo';
@@ -61,9 +59,10 @@ import { warezcdnembedHlsScraper } from './embeds/warezcdn/hls';
 import { warezcdnembedMp4Scraper } from './embeds/warezcdn/mp4';
 import { warezPlayerScraper } from './embeds/warezcdn/warezplayer';
 import { webtor1080Scraper, webtor480Scraper, webtor4kScraper, webtor720Scraper } from './embeds/webtor';
-import { xprimeApolloEmbed, xprimeFoxEmbed, xprimeStreamboxEmbed } from './embeds/xprime';
+import { xprimeApolloEmbed, xprimeFoxEmbed, xprimeMarantEmbed, xprimeStreamboxEmbed } from './embeds/xprime';
 import { EightStreamScraper } from './sources/8stream';
 import { coitusScraper } from './sources/coitus';
+import { ConsumetScraper } from './sources/consumet';
 import { embedsuScraper } from './sources/embedsu';
 import { FedAPIScraper } from './sources/fedapi';
 import { hdRezkaScraper } from './sources/hdrezka';
@@ -106,9 +105,10 @@ export function gatherAllSources(): Array<Sourcerer> {
     coitusScraper,
     streamboxScraper,
     nunflixScraper,
-    riveScraper,
     EightStreamScraper,
     xprimeScraper,
+    ConsumetScraper,
+    hianimeScraper,
   ];
 }
 
@@ -154,20 +154,17 @@ export function gatherAllEmbeds(): Array<Embed> {
     viperScraper,
     FedAPIPrivateScraper,
     FedDBScraper,
-    riveAsiacloudScraper,
-    riveEe3Scraper,
-    riveFastxScraper,
-    riveFilmechoScraper,
-    riveG1Scraper,
-    riveG2Scraper,
-    riveGhostScraper,
-    riveGuruScraper,
-    riveHydraxScraper,
-    riveKageScraper,
-    riveNovaScraper,
-    rivePutafilmeScraper,
     xprimeFoxEmbed,
     xprimeApolloEmbed,
     xprimeStreamboxEmbed,
+    xprimeMarantEmbed,
+    ConsumetVidCloudScraper,
+    ConsumetStreamSBScraper,
+    ConsumetVidStreamingScraper,
+    ConsumetStreamTapeScraper,
+    hianimeHd1DubEmbed,
+    hianimeHd2DubEmbed,
+    hianimeHd1SubEmbed,
+    hianimeHd2SubEmbed,
   ];
 }
