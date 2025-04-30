@@ -3,10 +3,11 @@ import { flags } from '@/entrypoint/utils/targets';
 import { EmbedOutput, makeEmbed } from '@/providers/base';
 import { NotFoundError } from '@/utils/errors';
 
-const foxBaseUrl = 'https://xprime.tv/foxtemp';
-const apolloBaseUrl = 'https://kendrickl-3amar.site';
-const showboxBaseUrl = 'https://xprime.tv/primebox';
-const marantBaseUrl = 'https://backend.xprime.tv/marant';
+const foxBaseUrl = 'https://cors.samj.app/?destination=https://xprime.tv/foxtemp';
+const apolloBaseUrl = 'https://cors.samj.app/?destination=https://kendrickl-3amar.site';
+const showboxBaseUrl = 'https://cors.samj.app/?destination=https://xprime.tv/primebox';
+const marantBaseUrl = 'https://cors.samj.app/?destination=https://backend.xprime.tv/marant';
+const primenetBaseUrl = 'https://cors.samj.app/?destination=https://backend.xprime.tv/primenet';
 
 const languageMap: Record<string, string> = {
   'chinese - hong kong': 'zh',
@@ -86,7 +87,7 @@ export const xprimeFoxEmbed = makeEmbed({
 export const xprimeApolloEmbed = makeEmbed({
   id: 'xprime-apollo',
   name: 'Appolo',
-  rank: 243,
+  rank: 244,
   async scrape(ctx): Promise<EmbedOutput> {
     const query = JSON.parse(ctx.url);
     let url = `${apolloBaseUrl}/${query.tmdbId}`;
@@ -135,16 +136,22 @@ export const xprimeApolloEmbed = makeEmbed({
 export const xprimeStreamboxEmbed = makeEmbed({
   id: 'xprime-streambox',
   name: 'Streambox',
-  rank: 242,
+  rank: 243,
   async scrape(ctx): Promise<EmbedOutput> {
     const query = JSON.parse(ctx.url);
-    let url = showboxBaseUrl;
+
+    let url = `${showboxBaseUrl}?name=${query.title}&year=${query.releaseYear}&fallback_year=${query.releaseYear}`;
 
     if (query.type === 'show') {
-      url += `?id=${query.tmdbId}&season=${query.season}&episode=${query.episode}`;
-    } else {
-      url += `?id=${query.tmdbId}`;
+      url += `&season=${query.season}&episode=${query.episode}`;
     }
+
+    // Old handling in case
+    // if (query.type === 'show') {
+    //   url += `?id=${query.tmdbId}&season=${query.season}&episode=${query.episode}`;
+    // } else {
+    //   url += `?id=${query.tmdbId}`;
+    // }
 
     const data = await ctx.fetcher(url);
 
@@ -160,37 +167,22 @@ export const xprimeStreamboxEmbed = makeEmbed({
         type: 'srt',
       })) || [];
 
+    const qualityMap: Record<string, { type: string; url: string }> = {};
+
+    Object.entries(data.streams).forEach(([key, value]) => {
+      const normalizedKey = key.toLowerCase().replace('p', '');
+      qualityMap[normalizedKey] = {
+        type: 'mp4',
+        url: value as string,
+      };
+    });
+
     return {
       stream: [
         {
           id: 'primary',
           captions,
-          qualities: {
-            ...(data.streams['1080p'] && {
-              1080: {
-                type: 'mp4',
-                url: data.streams['1080p'],
-              },
-            }),
-            ...(data.streams['720p'] && {
-              720: {
-                type: 'mp4',
-                url: data.streams['720p'],
-              },
-            }),
-            ...(data.streams['480p'] && {
-              480: {
-                type: 'mp4',
-                url: data.streams['480p'],
-              },
-            }),
-            ...(data.streams['360p'] && {
-              360: {
-                type: 'mp4',
-                url: data.streams['360p'],
-              },
-            }),
-          },
+          qualities: qualityMap,
           type: 'file',
           flags: [flags.CORS_ALLOWED],
         },
@@ -211,7 +203,41 @@ export const xprimeMarantEmbed = makeEmbed({
       url += `&season=${query.season}&episode=${query.episode}`;
     }
 
-    const data = await await ctx.fetcher(url);
+    const data = await ctx.fetcher(url);
+
+    if (!data) throw new NotFoundError('No response received');
+    if (data.error) throw new NotFoundError(data.error);
+    if (!data.url) throw new NotFoundError('No stream URL found in response');
+
+    ctx.progress(90);
+
+    return {
+      stream: [
+        {
+          type: 'hls',
+          id: 'primary',
+          playlist: data.url,
+          flags: [flags.CORS_ALLOWED],
+          captions: [],
+        },
+      ],
+    };
+  },
+});
+
+export const xprimePrimenetEmbed = makeEmbed({
+  id: 'xprime-primenet',
+  name: 'Primenet',
+  rank: 242,
+  async scrape(ctx): Promise<EmbedOutput> {
+    const query = JSON.parse(ctx.url);
+    let url = `${primenetBaseUrl}?id=${query.tmdbId}`;
+
+    if (query.type === 'show') {
+      url += `&season=${query.season}&episode=${query.episode}`;
+    }
+
+    const data = await ctx.fetcher(url);
 
     if (!data) throw new NotFoundError('No response received');
     if (data.error) throw new NotFoundError(data.error);
