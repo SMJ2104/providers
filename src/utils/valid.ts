@@ -1,6 +1,17 @@
 // import { alphaScraper, deltaScraper } from '@/providers/embeds/nsbx';
 // import { astraScraper, novaScraper, orionScraper } from '@/providers/embeds/whvx';
 import {
+  oneServerAnimepaheEmbed,
+  oneServerAnizoneEmbed,
+  oneServerAutoembedEmbed,
+  oneServerFlixhqEmbed,
+  oneServerFoxstreamEmbed,
+  oneServerGokuEmbed,
+  oneServerHianimeEmbed,
+  oneServerPrimeboxEmbed,
+  oneServerVidsrcsuEmbed,
+} from '@/providers/embeds/1server';
+import {
   ConsumetStreamSBScraper,
   ConsumetStreamTapeScraper,
   ConsumetVidCloudScraper,
@@ -14,7 +25,13 @@ import {
   hianimeHd2SubEmbed,
 } from '@/providers/embeds/hianime';
 import { warezcdnembedMp4Scraper } from '@/providers/embeds/warezcdn/mp4';
-import { xprimeApolloEmbed, xprimeFoxEmbed, xprimeMarantEmbed, xprimeStreamboxEmbed } from '@/providers/embeds/xprime';
+import {
+  xprimeApolloEmbed,
+  xprimeFoxEmbed,
+  xprimeMarantEmbed,
+  xprimePrimenetEmbed,
+  xprimeStreamboxEmbed,
+} from '@/providers/embeds/xprime';
 import { embedsuScraper } from '@/providers/sources/embedsu';
 import { uiraliveScraper } from '@/providers/sources/uiralive';
 import { Stream } from '@/providers/streams';
@@ -36,6 +53,7 @@ const SKIP_VALIDATION_CHECK_IDS = [
   xprimeApolloEmbed.id,
   xprimeStreamboxEmbed.id,
   xprimeMarantEmbed.id,
+  xprimePrimenetEmbed.id,
   ConsumetVidCloudScraper.id,
   ConsumetStreamSBScraper.id,
   ConsumetVidStreamingScraper.id,
@@ -44,6 +62,15 @@ const SKIP_VALIDATION_CHECK_IDS = [
   hianimeHd1SubEmbed.id,
   hianimeHd2DubEmbed.id,
   hianimeHd2SubEmbed.id,
+  oneServerAutoembedEmbed.id,
+  oneServerVidsrcsuEmbed.id,
+  oneServerPrimeboxEmbed.id,
+  oneServerFoxstreamEmbed.id,
+  oneServerFlixhqEmbed.id,
+  oneServerGokuEmbed.id,
+  oneServerHianimeEmbed.id,
+  oneServerAnimepaheEmbed.id,
+  oneServerAnizoneEmbed.id,
 ];
 
 export function isValidStream(stream: Stream | undefined): boolean {

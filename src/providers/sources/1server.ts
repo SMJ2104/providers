@@ -6,44 +6,59 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
   const query = {
     type: ctx.media.type,
     title: ctx.media.title,
-    tmdbId: ctx.media.tmdbId,
+    tmdbId: ctx.media.tmdbId.toString(),
     ...(ctx.media.type === 'show' && {
       season: ctx.media.season.number,
       episode: ctx.media.episode.number,
     }),
-    releaseYear: ctx.media.releaseYear,
   };
 
   const embeds = [
     {
-      embedId: 'xprime-fox',
+      embedId: 'oneserver-autoembed',
       url: JSON.stringify(query),
     },
     {
-      embedId: 'xprime-apollo',
+      embedId: 'oneserver-vidsrcsu',
       url: JSON.stringify(query),
     },
     {
-      embedId: 'xprime-streambox',
+      embedId: 'oneserver-primebox',
       url: JSON.stringify(query),
     },
     {
-      embedId: 'xprime-marant',
+      embedId: 'oneserver-foxstream',
       url: JSON.stringify(query),
     },
     {
-      embedId: 'xprime-primenet',
+      embedId: 'oneserver-flixhq',
       url: JSON.stringify(query),
     },
+    {
+      embedId: 'oneserver-goku',
+      url: JSON.stringify(query),
+    },
+    // {
+    //   embedId: 'oneserver-hianime',
+    //   url: JSON.stringify(query),
+    // },
+    // {
+    //   embedId: 'oneserver-animepahe',
+    //   url: JSON.stringify(query),
+    // },
+    // {
+    //   embedId: 'oneserver-anizone',
+    //   url: JSON.stringify(query),
+    // },
   ];
 
   return { embeds };
 }
 
-export const xprimeScraper = makeSourcerer({
-  id: 'xprimetv',
-  name: 'XPrime 💣',
-  rank: 250,
+export const oneServerScraper = makeSourcerer({
+  id: '1server',
+  name: '1Server 🤝',
+  rank: 180,
   disabled: false,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: comboScraper,

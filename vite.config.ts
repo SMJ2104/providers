@@ -15,6 +15,11 @@ export default defineConfig((env) => ({
       rollupTypes: true,
     }),
   ],
+  css: {
+    postcss: {
+      plugins: [],
+    },
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

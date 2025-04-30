@@ -120,8 +120,8 @@ async function comboScraper(ctx: ShowScrapeContext): Promise<SourcererOutput> {
 
 export const hianimeScraper = makeSourcerer({
   id: 'hianime',
-  name: 'Zoro (Anime)',
-  rank: 7,
+  name: 'Hianime 🔥',
+  rank: 175,
   disabled: false,
   flags: [flags.CORS_ALLOWED],
   scrapeShow: comboScraper,
