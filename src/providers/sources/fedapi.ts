@@ -4,9 +4,13 @@ import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 
 const getUserToken = (): string | null => {
   try {
-    return typeof window !== 'undefined' ? window.localStorage.getItem('febbox_ui_token') : null;
+    if (typeof window === 'undefined') return null;
+    const authData = window.localStorage.getItem('__MW::auth');
+    if (!authData) return null;
+    const parsedAuth = JSON.parse(authData);
+    return parsedAuth?.state?.febboxToken || null;
   } catch (e) {
-    console.warn('Unable to access localStorage:', e);
+    console.warn('Unable to access localStorage or parse auth data:', e);
     return null;
   }
 };

@@ -69,7 +69,7 @@ export const coitusScraper = makeSourcerer({
   id: 'coitus',
   name: 'Cactus 🌵',
   rank: 91,
-  disabled: false,
+  disabled: true,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: comboScraper,
   scrapeShow: comboScraper,

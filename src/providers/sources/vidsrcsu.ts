@@ -106,7 +106,6 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
     embedId: `server-${server.serverNumber}`,
     url: server.url,
   }));
-
   ctx.progress(90);
 
   return {

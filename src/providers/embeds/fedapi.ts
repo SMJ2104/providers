@@ -15,7 +15,7 @@ const getRegion = (): string | null => {
     const parsed = JSON.parse(regionData);
     return parsed?.state?.region ?? null;
   } catch (e) {
-    console.warn('Unable to access or parse region from localStorage:', e);
+    console.warn('Unable to access localStorage or parse auth data:', e);
     return null;
   }
 };

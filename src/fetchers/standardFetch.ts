@@ -25,7 +25,7 @@ export function makeStandardFetcher(f: FetchLike): Fetcher {
 
     // AbortController
     const controller = new AbortController();
-    const timeout = 15000; // 10s timeout
+    const timeout = 15000; // 15s timeout
     const timeoutId = setTimeout(() => controller.abort(), timeout);
 
     try {

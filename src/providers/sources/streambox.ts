@@ -17,15 +17,9 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
     throw new NotFoundError('Failed to fetch StreamBox data');
   }
 
+  console.log(apiRes);
+
   const data = await apiRes;
-
-  if (data.provider !== 'MovieBox') {
-    throw new NotFoundError('Not a MovieBox provider response');
-  }
-
-  if (!data.url || data.url.length === 0) {
-    throw new NotFoundError('No MovieBox streams found');
-  }
 
   const streams: Record<string, string> = {};
   data.url.forEach((stream: any) => {
@@ -39,46 +33,62 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
     type: 'srt',
   }));
 
+  if (data.provider === 'MovieBox') {
+    return {
+      embeds: [],
+      stream: [
+        {
+          id: 'primary',
+          captions,
+          qualities: {
+            ...(streams['1080'] && {
+              1080: {
+                type: 'mp4',
+                url: streams['1080'],
+              },
+            }),
+            ...(streams['720'] && {
+              720: {
+                type: 'mp4',
+                url: streams['720'],
+              },
+            }),
+            ...(streams['480'] && {
+              480: {
+                type: 'mp4',
+                url: streams['480'],
+              },
+            }),
+            ...(streams['360'] && {
+              360: {
+                type: 'mp4',
+                url: streams['360'],
+              },
+            }),
+          },
+          type: 'file',
+          flags: [flags.CORS_ALLOWED],
+          preferredHeaders: {
+            Referer: data.headers?.Referer,
+          },
+        },
+      ],
+    };
+  }
+
+  const hlsStream = data.url.find((stream: any) => stream.type === 'hls') || data.url[0];
   return {
     embeds: [],
     stream: [
       {
         id: 'primary',
         captions,
-        qualities: {
-          ...(streams['1080'] && {
-            1080: {
-              type: 'mp4',
-              url: streams['1080'],
-            },
-          }),
-          ...(streams['720'] && {
-            720: {
-              type: 'mp4',
-              url: streams['720'],
-            },
-          }),
-          ...(streams['480'] && {
-            480: {
-              type: 'mp4',
-              url: streams['480'],
-            },
-          }),
-          ...(streams['360'] && {
-            360: {
-              type: 'mp4',
-              url: streams['360'],
-            },
-          }),
-        },
-        type: 'file',
+        playlist: hlsStream.link,
+        type: 'hls',
         flags: [flags.CORS_ALLOWED],
-        ...(data.proxy && {
-          preferredHeaders: {
-            Referer: 'https://h5.aoneroom.com',
-          },
-          proxyDepth: 1,
-        }),
+        preferredHeaders: {
+          Referer: data.headers?.Referer,
+        },
       },
     ],
   };
