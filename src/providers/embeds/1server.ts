@@ -228,7 +228,7 @@ const movieTvProviders = [
   { id: 'vidsrcsu', name: 'vidsrc.su', rank: 164, disabled: true },
   { id: 'primebox', name: 'Primebox', rank: 162, disabled: true },
   { id: 'foxstream', name: 'Foxstream', rank: 161, disabled: true },
-  { id: 'flixhq', name: 'FlixHQ', rank: 166 },
+  { id: 'flixhq', name: 'FlixHQ', rank: 166, disabled: true  },
   { id: 'goku', name: 'Goku', rank: 163, disabled: true },
 ];
 
