@@ -8,6 +8,7 @@ const apolloBaseUrl = 'https://cors.samj.app/?destination=https://kendrickl-3ama
 const showboxBaseUrl = 'https://cors.samj.app/?destination=https://xprime.tv/primebox';
 const marantBaseUrl = 'https://cors.samj.app/?destination=https://backend.xprime.tv/marant';
 const primenetBaseUrl = 'https://cors.samj.app/?destination=https://backend.xprime.tv/primenet';
+const volkswagenBaseUrl = 'https://backend.xprime.tv/volkswagen';
 
 const languageMap: Record<string, string> = {
   'chinese - hong kong': 'zh',
@@ -193,7 +194,7 @@ export const xprimeStreamboxEmbed = makeEmbed({
 
 export const xprimeMarantEmbed = makeEmbed({
   id: 'xprime-marant',
-  name: 'Marant',
+  name: 'Marant (French + English)',
   rank: 240,
   async scrape(ctx): Promise<EmbedOutput> {
     const query = JSON.parse(ctx.url);
@@ -253,6 +254,50 @@ export const xprimePrimenetEmbed = makeEmbed({
           id: 'primary',
           playlist: data.url,
           flags: [flags.CORS_ALLOWED],
+          captions: [],
+        },
+      ],
+    };
+  },
+});
+
+export const xprimeVolkswagenEmbed = makeEmbed({
+  id: 'xprime-volkswagen',
+  name: 'Volkswagen (German)',
+  rank: 239,
+  async scrape(ctx): Promise<EmbedOutput> {
+    const query = JSON.parse(ctx.url);
+    let url = `${volkswagenBaseUrl}?name=${query.title}`;
+
+    if (query.type === 'show') {
+      url += `&season=${query.season}&episode=${query.episode}`;
+    }
+
+    const data = await ctx.fetcher(url);
+
+    if (!data) throw new NotFoundError('No response received');
+    if (data.error) throw new NotFoundError(data.error);
+    if (!data.streams) throw new NotFoundError('No streams found in response');
+
+    const qualityMap: Record<string, { type: string; url: string }> = {};
+
+    Object.entries(data.streams).forEach(([key, value]) => {
+      const normalizedKey = key.toLowerCase().replace('p', '');
+      qualityMap[normalizedKey] = {
+        type: 'mp4',
+        url: value as string,
+      };
+    });
+
+    ctx.progress(90);
+
+    return {
+      stream: [
+        {
+          id: 'primary',
+          type: 'file',
+          flags: [flags.CORS_ALLOWED],
+          qualities: qualityMap,
           captions: [],
         },
       ],

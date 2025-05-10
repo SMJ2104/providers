@@ -95,7 +95,7 @@
     "node-fetch": "^3.3.2",
     "set-cookie-parser": "^2.7.1",
     "unpacker": "^1.0.1",
-    "wyzie-lib": "^2.2.1"
+    "wyzie-lib": "^2.2.3"
   },
   "packageManager": "pnpm@9.14.4"
 }

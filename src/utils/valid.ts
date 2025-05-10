@@ -24,6 +24,12 @@ import {
   hianimeHd2DubEmbed,
   hianimeHd2SubEmbed,
 } from '@/providers/embeds/hianime';
+import {
+  streamwishEnglishScraper,
+  streamwishLatinoScraper,
+  streamwishSpanishScraper,
+} from '@/providers/embeds/streamwish';
+import { viperScraper } from '@/providers/embeds/viper';
 import { warezcdnembedMp4Scraper } from '@/providers/embeds/warezcdn/mp4';
 import {
   xprimeApolloEmbed,
@@ -31,9 +37,11 @@ import {
   xprimeMarantEmbed,
   xprimePrimenetEmbed,
   xprimeStreamboxEmbed,
+  xprimeVolkswagenEmbed,
 } from '@/providers/embeds/xprime';
 import { embedsuScraper } from '@/providers/sources/embedsu';
 import { uiraliveScraper } from '@/providers/sources/uiralive';
+import { wecimaScraper } from '@/providers/sources/wecima';
 import { Stream } from '@/providers/streams';
 import { IndividualEmbedRunnerOptions } from '@/runners/individualRunner';
 import { ProviderRunnerOptions } from '@/runners/runner';
@@ -45,6 +53,10 @@ const SKIP_VALIDATION_CHECK_IDS = [
   // novaScraper.id,
   // astraScraper.id,
   // orionScraper.id,
+  viperScraper.id,
+  streamwishLatinoScraper.id,
+  streamwishSpanishScraper.id,
+  streamwishEnglishScraper.id,
   uiraliveScraper.id,
   embedsuScraper.id,
   FedAPIPrivateScraper.id,
@@ -54,6 +66,7 @@ const SKIP_VALIDATION_CHECK_IDS = [
   xprimeStreamboxEmbed.id,
   xprimeMarantEmbed.id,
   xprimePrimenetEmbed.id,
+  xprimeVolkswagenEmbed.id,
   ConsumetVidCloudScraper.id,
   ConsumetStreamSBScraper.id,
   ConsumetVidStreamingScraper.id,
@@ -71,6 +84,7 @@ const SKIP_VALIDATION_CHECK_IDS = [
   oneServerHianimeEmbed.id,
   oneServerAnimepaheEmbed.id,
   oneServerAnizoneEmbed.id,
+  wecimaScraper.id,
 ];
 
 export function isValidStream(stream: Stream | undefined): boolean {

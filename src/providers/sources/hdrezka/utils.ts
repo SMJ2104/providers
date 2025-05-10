@@ -38,26 +38,90 @@ function parseSubtitleLinks(inputString?: string | boolean): FileBasedStream['ca
   return captions;
 }
 
+// function getData(x: string): Record<string, string> {
+//   const v: Record<string, string> = {
+//     file3_separator: '//_//',
+//     bk0: '$$#!!@#!@##',
+//     bk1: '^^^!@##!!##',
+//     bk2: '####^!!##!@@',
+//     bk3: '@@@@@!##!^^^',
+//     bk4: '$$!!@$$@^!@#$$@',
+//   };
+//   let a = x.substr(2);
+//   for (let i = 4; i >= 0; i--) {
+//     const key = `bk${i}`;
+//     if (v[key]) {
+//       a = a.replace(
+//         v.file3_separator +
+//           Buffer.from(
+//             encodeURIComponent(v[key]).replace(/%([0-9A-F]{2})/g, (_, p1) => String.fromCharCode(parseInt(p1, 16))),
+//           ).toString('base64'),
+//         '',
+//       );
+//     }
+//   }
+//   try {
+//     a = decodeURIComponent(
+//       Buffer.from(a, 'base64')
+//         .toString()
+//         .split('')
+//         .map((c) => `%${`00${c.charCodeAt(0).toString(16)}`.slice(-2)}`)
+//         .join(''),
+//     );
+//   } catch (e) {
+//     a = '';
+//   }
+//   return a.split(',').reduce(
+//     (m, ele) => {
+//       const [key, value] = ele.split(']');
+//       m[key.replace('[', '')] = value;
+//       return m;
+//     },
+//     {} as Record<string, string>,
+//   );
+// }
+
 function parseVideoLinks(inputString?: string): FileBasedStream['qualities'] {
   if (!inputString) throw new NotFoundError('No video links found');
-  const linksArray = inputString.split(',');
-  const result: FileBasedStream['qualities'] = {};
 
-  linksArray.forEach((link) => {
-    const match = link.match(/\[([^]+)](https?:\/\/[^\s,]+\.mp4)/);
-    if (match) {
-      const qualityText = match[1];
-      const mp4Url = match[2];
+  try {
+    const qualityMap: Record<string, { type: 'mp4'; url: string }> = {};
+    const links = inputString.split(',');
 
-      const numericQualityMatch = qualityText.match(/(\d+p)/);
-      const quality = numericQualityMatch ? numericQualityMatch[1] : 'Unknown';
+    links.forEach((link) => {
+      const match = link.match(/\[([^\]]+)\](https?:\/\/[^\s,]+)/);
+      if (match) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [_, quality, url] = match;
+        // Skip premium qualities that are null
+        if (url === 'null') return;
 
+        // Normalize quality (remove HTML tags and convert to lowercase)
+        const normalizedQuality = quality
+          .replace(/<[^>]+>/g, '') // Remove HTML tags
+          .toLowerCase()
+          .replace('p', '')
+          .trim();
+
+        qualityMap[normalizedQuality] = {
+          type: 'mp4',
+          url: url.trim(),
+        };
+      }
+    });
+
+    // Convert to the expected format
+    const result: FileBasedStream['qualities'] = {};
+    Object.entries(qualityMap).forEach(([quality, data]) => {
       const validQuality = getValidQualityFromString(quality);
-      result[validQuality] = { type: 'mp4', url: mp4Url };
-    }
-  });
+      result[validQuality] = data;
+    });
 
-  return result;
+    return result;
+  } catch (error) {
+    console.error('Error parsing video links:', error);
+    throw new NotFoundError('Failed to parse video links');
+  }
 }
 
 function extractTitleAndYear(input: string) {

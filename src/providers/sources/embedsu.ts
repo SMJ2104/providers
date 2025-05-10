@@ -1,4 +1,3 @@
-import { flags } from '@/entrypoint/utils/targets';
 import { SourcererEmbed, SourcererOutput, makeSourcerer } from '@/providers/base';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
@@ -66,7 +65,7 @@ export const embedsuScraper = makeSourcerer({
   name: 'EmbedSu 🍿',
   rank: 242,
   disabled: false,
-  flags: [flags.CORS_ALLOWED],
+  flags: [],
   scrapeMovie: comboScraper,
   scrapeShow: comboScraper,
 });

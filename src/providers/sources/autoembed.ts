@@ -5,6 +5,7 @@ import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 
 const apiUrl = 'https://tom.autoembed.cc';
+// const baseUrl = 'https://watch.autoembed.cc';
 
 async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promise<SourcererOutput> {
   const mediaType = ctx.media.type === 'show' ? 'tv' : 'movie';
@@ -22,10 +23,9 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
     },
     headers: {
       Referer: apiUrl,
+      Origin: apiUrl,
     },
   });
-
-  console.log(data);
 
   if (!data) throw new NotFoundError('Failed to fetch video source');
   if (!data.videoSource) throw new NotFoundError('No video source found');
@@ -49,7 +49,7 @@ export const autoembedScraper = makeSourcerer({
   id: 'autoembed',
   name: 'Autoembed 🔮',
   rank: 90,
-  disabled: true,
+  disabled: false,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: comboScraper,
   scrapeShow: comboScraper,

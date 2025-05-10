@@ -225,7 +225,7 @@ function processApiResponse(response: any, ctx: any): EmbedOutput {
 /* MOVIE & TV PROVIDERS */
 const movieTvProviders = [
   { id: 'autoembed', name: 'Autoembed', rank: 165 },
-  { id: 'vidsrcsu', name: 'vidsrc.su', rank: 164 },
+  { id: 'vidsrcsu', name: 'vidsrc.su', rank: 164, disabled: true },
   { id: 'primebox', name: 'Primebox', rank: 162, disabled: true },
   { id: 'foxstream', name: 'Foxstream', rank: 161, disabled: true },
   { id: 'flixhq', name: 'FlixHQ', rank: 166 },
