@@ -229,7 +229,6 @@ export const xprimeMarantEmbed = makeEmbed({
 export const xprimePrimenetEmbed = makeEmbed({
   id: 'xprime-primenet',
   name: 'Primenet',
-  disabled: true,
   rank: 242,
   async scrape(ctx): Promise<EmbedOutput> {
     const query = JSON.parse(ctx.url);
