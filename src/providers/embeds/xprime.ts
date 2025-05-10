@@ -230,6 +230,7 @@ export const xprimePrimenetEmbed = makeEmbed({
   id: 'xprime-primenet',
   name: 'Primenet',
   rank: 242,
+  disabled: true,
   async scrape(ctx): Promise<EmbedOutput> {
     const query = JSON.parse(ctx.url);
     let url = `${primenetBaseUrl}?id=${query.tmdbId}`;
