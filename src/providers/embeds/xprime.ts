@@ -251,7 +251,7 @@ export const xprimePrimenetEmbed = makeEmbed({
         {
           type: 'hls',
           id: 'primary',
-          playlist: data.url,
+          playlist: `https://proxy-m3u8.uira.live/m3u8-proxy?url=${encodeURIComponent(data.url)}&headers=${encodeURIComponent(JSON.stringify({ referer: 'https://pstream.org/', origin: 'https://pstream.org' }))}`,
           flags: [flags.CORS_ALLOWED],
           captions: [],
         },
