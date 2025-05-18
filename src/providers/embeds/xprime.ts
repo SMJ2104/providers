@@ -95,6 +95,7 @@ export const xprimeStreamboxEmbed = makeEmbed({
   id: 'xprime-streambox',
   name: 'Streambox',
   rank: 236,
+  disabled: true,
   async scrape(ctx): Promise<EmbedOutput> {
     const query = JSON.parse(ctx.url);
 
