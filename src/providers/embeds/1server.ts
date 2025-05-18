@@ -2,6 +2,7 @@
 import { flags } from '@/entrypoint/utils/targets';
 import { EmbedOutput, makeEmbed } from '@/providers/base';
 import { NotFoundError } from '@/utils/errors';
+import { createM3U8ProxyUrl, updateM3U8ProxyUrl } from '@/utils/proxy';
 
 const baseUrl = 'https://flix.1anime.app';
 
@@ -37,14 +38,12 @@ const languageMap: Record<string, string> = {
 };
 
 function createProxyUrl(originalUrl: string, referer?: string): string {
-  const encodedUrl = encodeURIComponent(originalUrl);
-  const encodedHeaders = encodeURIComponent(
-    JSON.stringify({
-      referer,
-    }),
-  );
+  const headers: Record<string, string> = {};
+  if (referer) {
+    headers.referer = referer;
+  }
 
-  return `https://proxy.fifthwit.net/m3u8-proxy?url=${encodedUrl}&headers=${encodedHeaders}`;
+  return createM3U8ProxyUrl(originalUrl, headers);
 }
 
 function processProxiedURL(url: string): string {
@@ -76,7 +75,7 @@ function processProxiedURL(url: string): string {
 
   // Handle other proxied URLs
   if (url.includes('/m3u8-proxy?url=')) {
-    return url.replace(/https:\/\/[^/]+\/m3u8-proxy/, 'https://proxy.fifthwit.net/m3u8-proxy');
+    return updateM3U8ProxyUrl(url);
   }
 
   return createProxyUrl(url);

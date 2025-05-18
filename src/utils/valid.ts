@@ -34,6 +34,7 @@ import { warezcdnembedMp4Scraper } from '@/providers/embeds/warezcdn/mp4';
 import {
   xprimeApolloEmbed,
   xprimeFoxEmbed,
+  xprimeHarbourEmbed,
   xprimeMarantEmbed,
   xprimePrimenetEmbed,
   xprimeStreamboxEmbed,
@@ -67,6 +68,7 @@ const SKIP_VALIDATION_CHECK_IDS = [
   xprimeMarantEmbed.id,
   xprimePrimenetEmbed.id,
   xprimeVolkswagenEmbed.id,
+  xprimeHarbourEmbed.id,
   ConsumetVidCloudScraper.id,
   ConsumetStreamSBScraper.id,
   ConsumetVidStreamingScraper.id,

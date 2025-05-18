@@ -1,39 +1,62 @@
 import { flags } from '@/entrypoint/utils/targets';
 import { makeEmbed } from '@/providers/base';
 
-export const streamtapeScraper = makeEmbed({
-  id: 'streamtape',
-  name: 'Streamtape',
-  rank: 160,
-  async scrape(ctx) {
-    const embed = await ctx.proxiedFetcher<string>(ctx.url);
+const providers = [
+  {
+    id: 'streamtape',
+    name: 'Streamtape',
+    rank: 160,
+  },
+  {
+    id: 'streamtape-latino',
+    name: 'Streamtape (Latino)',
+    rank: 159,
+  },
+];
 
-    const match = embed.match(/robotlink'\).innerHTML = (.*)'/);
-    if (!match) throw new Error('No match found');
+function embed(provider: { id: string; name: string; rank: number }) {
+  return makeEmbed({
+    id: provider.id,
+    name: provider.name,
+    rank: provider.rank,
+    async scrape(ctx) {
+      const response = await fetch(ctx.url, {
+        headers: {
+          Accept: 'text/html',
+        },
+      });
 
-    const [fh, sh] = match?.[1]?.split("+ ('") ?? [];
-    if (!fh || !sh) throw new Error('No match found');
+      const embedHtml = await response.text();
 
-    const url = `https:${fh?.replace(/'/g, '').trim()}${sh?.substring(3).trim()}`;
+      const match = embedHtml.match(/robotlink'\).innerHTML = (.*)'/);
+      if (!match) throw new Error('No match found');
 
-    return {
-      stream: [
-        {
-          id: 'primary',
-          type: 'file',
-          flags: [flags.CORS_ALLOWED, flags.IP_LOCKED],
-          captions: [],
-          qualities: {
-            unknown: {
-              type: 'mp4',
-              url,
+      const [fh, sh] = match?.[1]?.split("+ ('") ?? [];
+      if (!fh || !sh) throw new Error('No match found');
+
+      const url = `https:${fh?.replace(/'/g, '').trim()}${sh?.substring(3).trim()}`;
+
+      return {
+        stream: [
+          {
+            id: 'primary',
+            type: 'file',
+            flags: [flags.CORS_ALLOWED, flags.IP_LOCKED],
+            captions: [],
+            qualities: {
+              unknown: {
+                type: 'mp4',
+                url,
+              },
+            },
+            headers: {
+              Referer: 'https://streamtape.com',
             },
           },
-          headers: {
-            Referer: 'https://streamtape.com',
-          },
-        },
-      ],
-    };
-  },
-});
+        ],
+      };
+    },
+  });
+}
+
+export const [streamtapeScraper, streamtapeLatinoScraper] = providers.map(embed);

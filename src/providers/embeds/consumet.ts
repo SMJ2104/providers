@@ -2,6 +2,7 @@
 import { flags } from '@/entrypoint/utils/targets';
 import { EmbedOutput, makeEmbed } from '@/providers/base';
 import { NotFoundError } from '@/utils/errors';
+import { createM3U8ProxyUrl } from '@/utils/proxy';
 
 import { Caption } from '../captions';
 
@@ -123,12 +124,20 @@ function embed(provider: { id: string; rank: number; name: string; server: strin
 
       ctx.progress(90);
 
+      const headers: Record<string, string> = {};
+      if (data.headers.Referer) {
+        headers.referer = data.headers.Referer;
+      }
+      if (data.headers.Origin) {
+        headers.origin = data.headers.Origin;
+      }
+
       return {
         stream: [
           {
             id: 'primary',
             captions,
-            playlist: `https://proxy.fifthwit.net/m3u8-proxy?url=${encodeURIComponent(streams.unknown)}&headers=${encodeURIComponent(JSON.stringify({ ...(data.headers.Referer && { referer: data.headers.Referer }), ...(data.headers.Origin && { origin: data.headers.Origin }) }))}`,
+            playlist: createM3U8ProxyUrl(streams.unknown, headers),
             type: 'hls',
             flags: [flags.CORS_ALLOWED],
             ...(thumbnailTrack && {

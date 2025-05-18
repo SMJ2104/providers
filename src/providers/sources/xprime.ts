@@ -16,10 +16,6 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
 
   const embeds = [
     {
-      embedId: 'xprime-fox',
-      url: JSON.stringify(query),
-    },
-    {
       embedId: 'xprime-apollo',
       url: JSON.stringify(query),
     },
@@ -28,11 +24,15 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
       url: JSON.stringify(query),
     },
     {
-      embedId: 'xprime-marant',
+      embedId: 'xprime-primenet',
       url: JSON.stringify(query),
     },
     {
-      embedId: 'xprime-primenet',
+      embedId: 'xprime-fox',
+      url: JSON.stringify(query),
+    },
+    {
+      embedId: 'xprime-marant',
       url: JSON.stringify(query),
     },
     {

@@ -9,6 +9,7 @@ const showboxBaseUrl = 'https://cors.samj.app/?destination=https://xprime.tv/pri
 const marantBaseUrl = 'https://cors.samj.app/?destination=https://backend.xprime.tv/marant';
 const primenetBaseUrl = 'https://cors.samj.app/?destination=https://backend.xprime.tv/primenet';
 const volkswagenBaseUrl = 'https://backend.xprime.tv/volkswagen';
+const harbourBaseUrl = 'https://backend.xprime.tv/harbour';
 
 const languageMap: Record<string, string> = {
   'chinese - hong kong': 'zh',
@@ -41,54 +42,10 @@ const languageMap: Record<string, string> = {
   اردو: 'ur',
 };
 
-export const xprimeFoxEmbed = makeEmbed({
-  id: 'xprime-fox',
-  name: 'Fox',
-  rank: 241,
-  async scrape(ctx): Promise<EmbedOutput> {
-    const query = JSON.parse(ctx.url);
-    const params = new URLSearchParams({
-      name: query.title,
-      pstream: 'true',
-    });
-
-    if (query.type === 'show') {
-      params.append('season', query.season.toString());
-      params.append('episode', query.episode.toString());
-    }
-
-    const apiRes = await ctx.fetcher(`${foxBaseUrl}?${params.toString()}`);
-    if (!apiRes) throw new NotFoundError('No response received');
-    const data = await JSON.parse(apiRes);
-    if (!data.url) throw new NotFoundError('No stream URL found in response');
-
-    const captions =
-      data.subtitles?.map((sub: { file: string; label: string }) => ({
-        type: 'vtt',
-        url: sub.file,
-        language: languageMap[sub.label.toLowerCase()] || 'unknown',
-      })) || [];
-
-    ctx.progress(90);
-
-    return {
-      stream: [
-        {
-          type: 'hls',
-          id: 'primary',
-          playlist: `https://proxy-m3u8.uira.live/m3u8-proxy?url=${encodeURIComponent(data.url)}&headers=${encodeURIComponent(JSON.stringify({ referer: 'https://megacloud.store/', origin: 'https://megacloud.store' }))}`,
-          flags: [flags.CORS_ALLOWED],
-          captions,
-        },
-      ],
-    };
-  },
-});
-
 export const xprimeApolloEmbed = makeEmbed({
   id: 'xprime-apollo',
   name: 'Appolo',
-  rank: 244,
+  rank: 237,
   async scrape(ctx): Promise<EmbedOutput> {
     const query = JSON.parse(ctx.url);
     let url = `${apolloBaseUrl}/${query.tmdbId}`;
@@ -137,7 +94,7 @@ export const xprimeApolloEmbed = makeEmbed({
 export const xprimeStreamboxEmbed = makeEmbed({
   id: 'xprime-streambox',
   name: 'Streambox',
-  rank: 243,
+  rank: 236,
   async scrape(ctx): Promise<EmbedOutput> {
     const query = JSON.parse(ctx.url);
 
@@ -192,13 +149,13 @@ export const xprimeStreamboxEmbed = makeEmbed({
   },
 });
 
-export const xprimeMarantEmbed = makeEmbed({
-  id: 'xprime-marant',
-  name: 'Marant (French + English)',
-  rank: 240,
+export const xprimePrimenetEmbed = makeEmbed({
+  id: 'xprime-primenet',
+  name: 'Primenet',
+  rank: 235,
   async scrape(ctx): Promise<EmbedOutput> {
     const query = JSON.parse(ctx.url);
-    let url = `${marantBaseUrl}?id=${query.tmdbId}`;
+    let url = `${primenetBaseUrl}?id=${query.tmdbId}`;
 
     if (query.type === 'show') {
       url += `&season=${query.season}&episode=${query.episode}`;
@@ -226,14 +183,101 @@ export const xprimeMarantEmbed = makeEmbed({
   },
 });
 
-export const xprimePrimenetEmbed = makeEmbed({
-  id: 'xprime-primenet',
-  name: 'Primenet',
-  rank: 242,
-  disabled: true,
+export const xprimeFoxEmbed = makeEmbed({
+  id: 'xprime-fox',
+  name: 'Fox',
+  rank: 233,
   async scrape(ctx): Promise<EmbedOutput> {
     const query = JSON.parse(ctx.url);
-    let url = `${primenetBaseUrl}?id=${query.tmdbId}`;
+    const params = new URLSearchParams({
+      name: query.title,
+      pstream: 'true',
+    });
+
+    if (query.type === 'show') {
+      params.append('season', query.season.toString());
+      params.append('episode', query.episode.toString());
+    }
+
+    const apiRes = await ctx.fetcher(`${foxBaseUrl}?${params.toString()}`);
+    if (!apiRes) throw new NotFoundError('No response received');
+    const data = await JSON.parse(apiRes);
+    if (!data.url) throw new NotFoundError('No stream URL found in response');
+
+    const captions =
+      data.subtitles?.map((sub: { file: string; label: string }) => ({
+        type: 'vtt',
+        url: sub.file,
+        language: languageMap[sub.label.toLowerCase()] || 'unknown',
+      })) || [];
+
+    ctx.progress(90);
+
+    return {
+      stream: [
+        {
+          type: 'hls',
+          id: 'primary',
+          playlist: `https://oca.kendrickl-3amar.site/?v=${encodeURIComponent(data.url)}&headers=${encodeURIComponent(JSON.stringify({ referer: 'https://megacloud.store/', origin: 'https://megacloud.store' }))}`,
+          flags: [flags.CORS_ALLOWED],
+          captions,
+        },
+      ],
+    };
+  },
+});
+
+export const xprimeHarbourEmbed = makeEmbed({
+  id: 'xprime-harbour',
+  name: 'Harbour',
+  rank: 232,
+  async scrape(ctx): Promise<EmbedOutput> {
+    const query = JSON.parse(ctx.url);
+    const params = new URLSearchParams({
+      name: query.title,
+      year: query.releaseYear.toString(),
+    });
+
+    if (query.type === 'show') {
+      params.append('season', query.season.toString());
+      params.append('episode', query.episode.toString());
+    }
+
+    const apiRes = await ctx.fetcher(`${harbourBaseUrl}?${params.toString()}`);
+    if (!apiRes) throw new NotFoundError('No response received');
+    const data = await JSON.parse(apiRes);
+    if (!data.url) throw new NotFoundError('No stream URL found in response');
+
+    const captions =
+      data.subtitles?.map((sub: { file: string; label: string }) => ({
+        type: 'vtt',
+        url: sub.file,
+        language: languageMap[sub.label.toLowerCase()] || 'unknown',
+      })) || [];
+
+    ctx.progress(90);
+
+    return {
+      stream: [
+        {
+          type: 'hls',
+          id: 'primary',
+          playlist: data.url,
+          flags: [flags.CORS_ALLOWED],
+          captions,
+        },
+      ],
+    };
+  },
+});
+
+export const xprimeMarantEmbed = makeEmbed({
+  id: 'xprime-marant',
+  name: 'Marant (French + English)',
+  rank: 231,
+  async scrape(ctx): Promise<EmbedOutput> {
+    const query = JSON.parse(ctx.url);
+    let url = `${marantBaseUrl}?id=${query.tmdbId}`;
 
     if (query.type === 'show') {
       url += `&season=${query.season}&episode=${query.episode}`;
@@ -264,13 +308,15 @@ export const xprimePrimenetEmbed = makeEmbed({
 export const xprimeVolkswagenEmbed = makeEmbed({
   id: 'xprime-volkswagen',
   name: 'Volkswagen (German)',
-  rank: 239,
+  rank: 230,
   async scrape(ctx): Promise<EmbedOutput> {
     const query = JSON.parse(ctx.url);
     let url = `${volkswagenBaseUrl}?name=${query.title}`;
 
     if (query.type === 'show') {
       url += `&season=${query.season}&episode=${query.episode}`;
+    } else {
+      url += `&year=${query.releaseYear}`;
     }
 
     const data = await ctx.fetcher(url);

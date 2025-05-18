@@ -4,6 +4,7 @@ import { compareTitle } from '@/utils/compare';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { makeCookieHeader } from '@/utils/cookie';
 import { NotFoundError } from '@/utils/errors';
+import { createM3U8ProxyUrl } from '@/utils/proxy';
 
 // thanks @TPN for this
 // See how to set this up yourself: https://gist.github.com/Pasithea0/9ba31d16580800e899c245a4379e902b
@@ -108,7 +109,12 @@ const universalScraper = async (ctx: ShowScrapeContext | MovieScrapeContext): Pr
 
   if (!autoFile) throw new Error('Failed to fetch playlist');
 
-  const playlist = `https://vercel-sucks.up.railway.app/m3u8-proxy?url=${encodeURIComponent(`${baseUrl}${autoFile}`)}&headers=${encodeURIComponent(JSON.stringify({ referer: baseUrl, cookie: makeCookieHeader({ hd: 'on' }) }))}`;
+  const headers = {
+    referer: baseUrl,
+    cookie: makeCookieHeader({ hd: 'on' }),
+  };
+
+  const playlist = createM3U8ProxyUrl(`${baseUrl}${autoFile}`, headers);
   ctx.progress(90);
 
   return {

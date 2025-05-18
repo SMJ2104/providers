@@ -1,6 +1,7 @@
 import { flags } from '@/entrypoint/utils/targets';
 import { makeEmbed } from '@/providers/base';
 import { NotFoundError } from '@/utils/errors';
+import { createM3U8ProxyUrl } from '@/utils/proxy';
 
 export const viperScraper = makeEmbed({
   id: 'viper',
@@ -21,15 +22,18 @@ export const viperScraper = makeEmbed({
     }
     const playlistUrl = apiResponse.body.source.replace(/^.*\/viper\//, 'https://');
 
-    // You need to set a proxy for flixhq CDN streams. Set up your own from this repo: https://github.com/Pasithea0/M3U8-Proxy
-    const proxiedPlaylist = `https://proxy.fifthwit.net/m3u8-proxy?url=${encodeURIComponent(playlistUrl)}&headers=${encodeURIComponent(JSON.stringify({ referer: 'https://megacloud.store/', origin: 'https://megacloud.store' }))}`;
+    // Headers needed for the M3U8 proxy
+    const headers = {
+      referer: 'https://megacloud.store/',
+      origin: 'https://megacloud.store',
+    };
 
     return {
       stream: [
         {
           type: 'hls',
           id: 'primary',
-          playlist: proxiedPlaylist,
+          playlist: createM3U8ProxyUrl(playlistUrl, headers),
           flags: [flags.CORS_ALLOWED],
           captions: [],
         },

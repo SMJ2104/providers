@@ -1,226 +1,46 @@
-import { load } from 'cheerio';
-
+import { flags } from '@/entrypoint/utils/targets';
 import { SourcererOutput, makeSourcerer } from '@/providers/base';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 
-const baseUrl = 'https://www.cuevana3.eu';
-
-interface Video {
-  result: string;
-}
-
-interface VideosByLanguage {
-  latino?: Video[];
-  spanish?: Video[];
-  english?: Video[];
-  [key: string]: Video[] | undefined;
-}
-
-interface MovieData {
-  videos: VideosByLanguage;
-}
-
-interface EpisodeData {
-  videos: VideosByLanguage;
-}
-
-function normalizeTitle(title: string): string {
-  return title
-    .normalize('NFD') // Remove accents
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .replace(/[^a-z0-9\s-]/gi, '') // Remove non-alphanumeric characters
-    .replace(/\s+/g, '-') // Replace spaces with hyphens
-    .replace(/-+/g, '-'); // Remove multiple hyphens
-}
-
-async function getStreamUrl(ctx: MovieScrapeContext | ShowScrapeContext, embedUrl: string): Promise<string | null> {
-  try {
-    const html = await ctx.proxiedFetcher(embedUrl);
-    const match = html.match(/var url = '([^']+)'/);
-    if (match) {
-      return match[1];
-    }
-  } catch {
-    // Ignore errors from dead embeds
-  }
-  return null;
-}
-
-function validateStream(url: string): boolean {
-  return (
-    url.startsWith('https://') && (url.includes('streamwish') || url.includes('filemoon') || url.includes('vidhide'))
-  );
-}
-
-async function extractVideos(ctx: MovieScrapeContext | ShowScrapeContext, videos: VideosByLanguage) {
-  const videoList: { embedId: string; url: string }[] = [];
-
-  for (const [lang, videoArray] of Object.entries(videos)) {
-    if (!videoArray) continue;
-
-    for (const video of videoArray) {
-      if (!video.result) continue;
-
-      const realUrl = await getStreamUrl(ctx, video.result);
-      if (!realUrl || !validateStream(realUrl)) continue;
-
-      let embedId = '';
-      if (realUrl.includes('filemoon')) embedId = 'filemoon';
-      else if (realUrl.includes('streamwish')) {
-        if (lang === 'latino') embedId = 'streamwish-latino';
-        else if (lang === 'spanish') embedId = 'streamwish-spanish';
-        else if (lang === 'english') embedId = 'streamwish-english';
-        else embedId = 'streamwish-latino';
-      } else if (realUrl.includes('vidhide')) embedId = 'vidhide';
-      else if (realUrl.includes('voe')) embedId = 'voe';
-      else continue;
-
-      videoList.push({
-        embedId,
-        url: realUrl,
-      });
-    }
-  }
-
-  return videoList;
-}
-
-async function fetchTmdbTitleInSpanish(tmdbId: number, apiKey: string, mediaType: 'movie' | 'show'): Promise<string> {
-  const endpoint =
-    mediaType === 'movie'
-      ? `https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${apiKey}&language=es-ES`
-      : `https://api.themoviedb.org/3/tv/${tmdbId}?api_key=${apiKey}&language=es-ES`;
-
-  const response = await fetch(endpoint);
-  if (!response.ok) {
-    throw new Error(`Error fetching TMDB data: ${response.statusText}`);
-  }
-  const tmdbData = await response.json();
-  return mediaType === 'movie' ? tmdbData.title : tmdbData.name;
-}
-
-async function fetchTitleSubstitutes(): Promise<Record<string, string>> {
-  try {
-    const response = await fetch('https://raw.githubusercontent.com/moonpic/fixed-titles/refs/heads/main/main.json');
-    if (!response.ok) throw new Error('Failed to fetch fallback titles');
-    return await response.json();
-  } catch {
-    return {};
-  }
-}
-
 async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promise<SourcererOutput> {
-  const mediaType = ctx.media.type;
-  const tmdbId = ctx.media.tmdbId;
-  const apiKey = '7604525319adb2db8e7e841cb98e9217';
+  const { tmdbId, type } = ctx.media;
 
   if (!tmdbId) {
-    throw new NotFoundError('TMDB ID is required to fetch the title in Spanish');
+    throw new NotFoundError('TMDB ID is required');
   }
 
-  const translatedTitle = await fetchTmdbTitleInSpanish(Number(tmdbId), apiKey, mediaType);
-  let normalizedTitle = normalizeTitle(translatedTitle);
+  // Definir baseUrl
+  const baseUrl = `https://ws-m3u8.moonpic.qzz.io:3008/tmdb`;
 
-  let pageUrl =
-    mediaType === 'movie'
-      ? `${baseUrl}/ver-pelicula/${normalizedTitle}`
-      : `${baseUrl}/episodio/${normalizedTitle}-temporada-${ctx.media.season?.number}-episodio-${ctx.media.episode?.number}`;
-
-  ctx.progress(60);
-
-  let pageContent = await ctx.proxiedFetcher(pageUrl);
-  let $ = load(pageContent);
-
-  let script = $('script')
-    .toArray()
-    .find((scriptEl) => {
-      const content = (scriptEl.children[0] as any)?.data || '';
-      return content.includes('{"props":{"pageProps":');
-    });
-
-  let embeds: { embedId: string; url: string }[] = [];
-
-  if (script) {
-    let jsonData: any;
-    try {
-      const jsonString = (script.children[0] as any).data;
-      const start = jsonString.indexOf('{"props":{"pageProps":');
-      if (start === -1) throw new Error('No valid JSON start found');
-      const partialJson = jsonString.slice(start);
-      jsonData = JSON.parse(partialJson);
-    } catch (error: any) {
-      throw new NotFoundError(`Failed to parse JSON: ${error.message}`);
-    }
-
-    if (mediaType === 'movie') {
-      const movieData = jsonData.props.pageProps.thisMovie as MovieData;
-      if (movieData?.videos) {
-        embeds = (await extractVideos(ctx, movieData.videos)) ?? [];
-      }
+  let url = '';
+  if (type === 'movie') {
+    url = `${baseUrl}/movie/${tmdbId}`;
+  } else if (type === 'show') {
+    const showMedia = ctx.media as Extract<typeof ctx.media, { type: 'show' }>;
+    if (showMedia.season?.number != null && showMedia.episode?.number != null) {
+      url = `${baseUrl}/tv/${tmdbId}/season/${showMedia.season.number}/episode/${showMedia.episode.number}`;
     } else {
-      const episodeData = jsonData.props.pageProps.episode as EpisodeData;
-      if (episodeData?.videos) {
-        embeds = (await extractVideos(ctx, episodeData.videos)) ?? [];
-      }
+      throw new NotFoundError('Missing parameters for TV episode');
     }
+  } else {
+    throw new NotFoundError('Missing parameters for TV episode');
   }
 
-  if (embeds.length === 0) {
-    const fallbacks = await fetchTitleSubstitutes();
-    const fallbackTitle = fallbacks[tmdbId.toString()];
-
-    if (!fallbackTitle) {
-      throw new NotFoundError('No embed data found and no fallback title available');
-    }
-
-    normalizedTitle = normalizeTitle(fallbackTitle);
-    pageUrl =
-      mediaType === 'movie'
-        ? `${baseUrl}/ver-pelicula/${normalizedTitle}`
-        : `${baseUrl}/episodio/${normalizedTitle}-temporada-${ctx.media.season?.number}-episodio-${ctx.media.episode?.number}`;
-
-    pageContent = await ctx.proxiedFetcher(pageUrl);
-    $ = load(pageContent);
-    script = $('script')
-      .toArray()
-      .find((scriptEl) => {
-        const content = (scriptEl.children[0] as any)?.data || '';
-        return content.includes('{"props":{"pageProps":');
-      });
-
-    if (script) {
-      let jsonData: any;
-      try {
-        const jsonString = (script.children[0] as any).data;
-        const start = jsonString.indexOf('{"props":{"pageProps":');
-        if (start === -1) throw new Error('No valid JSON start found');
-        const partialJson = jsonString.slice(start);
-        jsonData = JSON.parse(partialJson);
-      } catch (error: any) {
-        throw new NotFoundError(`Failed to parse JSON: ${error.message}`);
-      }
-
-      if (mediaType === 'movie') {
-        const movieData = jsonData.props.pageProps.thisMovie as MovieData;
-        if (movieData?.videos) {
-          embeds = (await extractVideos(ctx, movieData.videos)) ?? [];
-        }
-      } else {
-        const episodeData = jsonData.props.pageProps.episode as EpisodeData;
-        if (episodeData?.videos) {
-          embeds = (await extractVideos(ctx, episodeData.videos)) ?? [];
-        }
-      }
-    }
+  // Realiza la solicitud
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new NotFoundError(`Failed to fetch data from local server: ${response.statusText}`);
   }
 
-  if (embeds.length === 0) {
+  const data = await response.json();
+
+  // Validar que vengan embeds válidos
+  if (!data.embeds || !Array.isArray(data.embeds) || data.embeds.length === 0) {
     throw new NotFoundError('No valid streams found');
   }
 
-  return { embeds };
+  return { embeds: data.embeds };
 }
 
 export const cuevana3Scraper = makeSourcerer({
@@ -228,7 +48,7 @@ export const cuevana3Scraper = makeSourcerer({
   name: 'Cuevana3',
   rank: 80,
   disabled: false,
-  flags: [],
+  flags: [flags.CORS_ALLOWED],
   scrapeMovie: comboScraper,
   scrapeShow: comboScraper,
 });

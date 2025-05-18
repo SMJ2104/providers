@@ -150,7 +150,11 @@ function embed(provider: {
       const streams = Object.entries(data.streams).reduce((acc: Record<string, string>, [quality, url]) => {
         let qualityKey: number;
         if (quality === 'ORG') {
-          acc.unknown = url;
+          // Only add unknown quality if it's an mp4 (handle URLs with query parameters)
+          const urlPath = url.split('?')[0]; // Remove query parameters
+          if (urlPath.toLowerCase().endsWith('.mp4')) {
+            acc.unknown = url;
+          }
           return acc;
         }
         if (quality === '4K') {

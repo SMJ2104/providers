@@ -1,6 +1,7 @@
 import { flags } from '@/entrypoint/utils/targets';
 import { EmbedOutput, makeEmbed } from '@/providers/base';
 import { NotFoundError } from '@/utils/errors';
+import { createM3U8ProxyUrl } from '@/utils/proxy';
 
 export const hianimeHd1DubEmbed = makeEmbed({
   id: 'hianime-hd1-dub',
@@ -21,7 +22,7 @@ export const hianimeHd1DubEmbed = makeEmbed({
         {
           type: 'hls',
           id: 'primary',
-          playlist: `https://proxy-m3u8.uira.live/m3u8-proxy?url=${data.data.sources[0].url}&headers=${encodeURIComponent(JSON.stringify(data.data.headers))}`,
+          playlist: createM3U8ProxyUrl(data.data.sources[0].url, data.data.headers),
           flags: [flags.CORS_ALLOWED],
           captions: [],
           ...(thumbnailTrack
@@ -57,7 +58,7 @@ export const hianimeHd2DubEmbed = makeEmbed({
         {
           type: 'hls',
           id: 'primary',
-          playlist: `https://proxy-m3u8.uira.live/m3u8-proxy?url=${data.data.sources[0].url}&headers=${encodeURIComponent(JSON.stringify(data.data.headers))}`,
+          playlist: createM3U8ProxyUrl(data.data.sources[0].url, data.data.headers),
           flags: [flags.CORS_ALLOWED],
           captions: [],
           ...(thumbnailTrack
@@ -93,7 +94,7 @@ export const hianimeHd1SubEmbed = makeEmbed({
         {
           type: 'hls',
           id: 'primary',
-          playlist: `https://proxy-m3u8.uira.live/m3u8-proxy?url=${data.data.sources[0].url}&headers=${encodeURIComponent(JSON.stringify(data.data.headers))}`,
+          playlist: createM3U8ProxyUrl(data.data.sources[0].url, data.data.headers),
           flags: [flags.CORS_ALLOWED],
           captions: [],
           ...(thumbnailTrack
@@ -129,7 +130,7 @@ export const hianimeHd2SubEmbed = makeEmbed({
         {
           type: 'hls',
           id: 'primary',
-          playlist: `https://proxy-m3u8.uira.live/m3u8-proxy?url=${data.data.sources[0].url}&headers=${encodeURIComponent(JSON.stringify(data.data.headers))}`,
+          playlist: createM3U8ProxyUrl(data.data.sources[0].url, data.data.headers),
           flags: [flags.CORS_ALLOWED],
           captions: [],
           ...(thumbnailTrack

@@ -2,6 +2,7 @@ import { flags } from '@/entrypoint/utils/targets';
 import { SourcererOutput, makeSourcerer } from '@/providers/base';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
+import { createM3U8ProxyUrl } from '@/utils/proxy';
 
 const baseUrl = 'https://api.coitus.ca';
 
@@ -30,14 +31,8 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
           const originalUrl = jsonData.u;
           const referer = jsonData.r || '';
 
-          const encodedUrl = encodeURIComponent(originalUrl);
-          const encodedHeaders = encodeURIComponent(
-            JSON.stringify({
-              referer,
-            }),
-          );
-
-          processedUrl = `https://proxy.fifthwit.net/m3u8-proxy?url=${encodedUrl}&headers=${encodedHeaders}`;
+          const headers = { referer };
+          processedUrl = createM3U8ProxyUrl(originalUrl, headers);
         } catch (jsonError) {
           console.error('Error decoding/parsing orbitproxy data:', jsonError);
         }
