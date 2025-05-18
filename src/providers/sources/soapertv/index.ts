@@ -135,7 +135,7 @@ export const soaperTvScraper = makeSourcerer({
   id: 'soapertv',
   name: 'S4MJ 🥨',
   rank: 236,
-  disabled: false, // they done broke it again
+  disabled: true, // they done broke it again
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: universalScraper,
   scrapeShow: universalScraper,
