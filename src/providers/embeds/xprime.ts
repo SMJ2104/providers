@@ -219,7 +219,7 @@ export const xprimeFoxEmbed = makeEmbed({
         {
           type: 'hls',
           id: 'primary',
-          playlist: `https://proxy-m3u8.uira.live/m3u8-proxy?url=${encodeURIComponent(data.url)}&headers=${encodeURIComponent(JSON.stringify({ referer: 'https://megacloud.store/', origin: 'https://megacloud.store' }))}`,
+          playlist: `https://proxy2.pstream.org/m3u8-proxy?url=${encodeURIComponent(data.url)}&headers=${encodeURIComponent(JSON.stringify({ referer: 'https://megacloud.store/', origin: 'https://megacloud.store' }))}`,
           flags: [flags.CORS_ALLOWED],
           captions,
         },
@@ -297,7 +297,7 @@ export const xprimeMarantEmbed = makeEmbed({
         {
           type: 'hls',
           id: 'primary',
-          playlist: `https://proxy-m3u8.uira.live/m3u8-proxy?url=${encodeURIComponent(data.url)}&headers=${encodeURIComponent(JSON.stringify({ referer: 'https://pstream.org/', origin: 'https://pstream.org' }))}`,
+          playlist: `https://proxy2.pstream.org/m3u8-proxy?url=${encodeURIComponent(data.url)}&headers=${encodeURIComponent(JSON.stringify({ referer: 'https://pstream.org/', origin: 'https://pstream.org' }))}`,
           flags: [flags.CORS_ALLOWED],
           captions: [],
         },
