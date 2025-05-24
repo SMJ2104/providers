@@ -262,13 +262,13 @@ export const xprimePhoenixEmbed = makeEmbed({
 
     return {
       stream: [
-        {
-          type: 'hls',
-          id: 'primary',
-          playlist: data.url,
-          flags: [flags.CORS_ALLOWED],
-          captions,
-        },
+      {
+        type: 'hls',
+        id: 'primary',
+        playlist: data.url.replace('https://oca.kendrickl-3amar.site/?v=', 'https://proxy2.pstream.org/m3u8-proxy?url='),
+        flags: [flags.CORS_ALLOWED],
+        captions,
+      },
       ],
     };
   },
@@ -353,7 +353,7 @@ export const xprimeHarbourEmbed = makeEmbed({
         {
           type: 'hls',
           id: 'primary',
-          playlist: data.url,
+          playlist: data.url.replace('https://oca.kendrickl-3amar.site/?v=', 'https://proxy2.pstream.org/m3u8-proxy?url='),
           flags: [flags.CORS_ALLOWED],
           captions,
         },
