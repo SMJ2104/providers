@@ -11,6 +11,7 @@ import {
   oneServerPrimeboxEmbed,
   oneServerVidsrcsuEmbed,
 } from '@/providers/embeds/1server';
+import { cinemaosHexaEmbeds } from '@/providers/embeds/cinemaos';
 import {
   ConsumetStreamSBScraper,
   ConsumetStreamTapeScraper,
@@ -36,11 +37,13 @@ import {
   xprimeFoxEmbed,
   xprimeHarbourEmbed,
   xprimeMarantEmbed,
+  xprimePhoenixEmbed,
   xprimePrimenetEmbed,
   xprimeStreamboxEmbed,
   xprimeVolkswagenEmbed,
 } from '@/providers/embeds/xprime';
 import { embedsuScraper } from '@/providers/sources/embedsu';
+import { soaperTvScraper } from '@/providers/sources/soapertv';
 import { uiraliveScraper } from '@/providers/sources/uiralive';
 import { wecimaScraper } from '@/providers/sources/wecima';
 import { Stream } from '@/providers/streams';
@@ -69,6 +72,7 @@ const SKIP_VALIDATION_CHECK_IDS = [
   xprimePrimenetEmbed.id,
   xprimeVolkswagenEmbed.id,
   xprimeHarbourEmbed.id,
+  xprimePhoenixEmbed.id,
   ConsumetVidCloudScraper.id,
   ConsumetStreamSBScraper.id,
   ConsumetVidStreamingScraper.id,
@@ -87,6 +91,8 @@ const SKIP_VALIDATION_CHECK_IDS = [
   oneServerAnimepaheEmbed.id,
   oneServerAnizoneEmbed.id,
   wecimaScraper.id,
+  ...cinemaosHexaEmbeds.map((e) => e.id),
+  soaperTvScraper.id,
 ];
 
 export function isValidStream(stream: Stream | undefined): boolean {

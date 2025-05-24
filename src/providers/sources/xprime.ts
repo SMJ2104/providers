@@ -7,6 +7,7 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
     type: ctx.media.type,
     title: ctx.media.title,
     tmdbId: ctx.media.tmdbId,
+    imdbId: ctx.media.imdbId,
     ...(ctx.media.type === 'show' && {
       season: ctx.media.season.number,
       episode: ctx.media.episode.number,
@@ -25,6 +26,10 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
     },
     {
       embedId: 'xprime-primenet',
+      url: JSON.stringify(query),
+    },
+    {
+      embedId: 'xprime-phoenix',
       url: JSON.stringify(query),
     },
     {

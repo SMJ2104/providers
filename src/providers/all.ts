@@ -37,6 +37,7 @@ import {
   autoembedTamilScraper,
   autoembedTeluguScraper,
 } from './embeds/autoembed';
+import { cinemaosEmbeds } from './embeds/cinemaos';
 import { closeLoadScraper } from './embeds/closeload';
 import {
   ConsumetStreamSBScraper,
@@ -81,6 +82,7 @@ import {
   xprimeFoxEmbed,
   xprimeHarbourEmbed,
   xprimeMarantEmbed,
+  xprimePhoenixEmbed,
   xprimePrimenetEmbed,
   xprimeStreamboxEmbed,
   xprimeVolkswagenEmbed,
@@ -88,15 +90,18 @@ import {
 import { oneServerScraper } from './sources/1server';
 import { EightStreamScraper } from './sources/8stream';
 import { animeflvScraper } from './sources/animeflv';
+import { cinemaosScraper } from './sources/cinemaos';
 import { coitusScraper } from './sources/coitus';
 import { ConsumetScraper } from './sources/consumet';
 import { cuevana3Scraper } from './sources/cuevana3';
 import { embedsuScraper } from './sources/embedsu';
 import { FedAPIScraper } from './sources/fedapi';
 import { hdRezkaScraper } from './sources/hdrezka';
+import { hollymoviehdScraper } from './sources/hollymoviehd';
 import { iosmirrorScraper } from './sources/iosmirror';
 import { iosmirrorPVScraper } from './sources/iosmirrorpv';
 import { nunflixScraper } from './sources/nunflix';
+import { oneroomScraper } from './sources/oneroom';
 import { ridooMoviesScraper } from './sources/ridomovies';
 import { slidemoviesScraper } from './sources/slidemovies';
 import { soaperTvScraper } from './sources/soapertv';
@@ -142,6 +147,9 @@ export function gatherAllSources(): Array<Sourcerer> {
     oneServerScraper,
     wecimaScraper,
     animeflvScraper,
+    cinemaosScraper,
+    hollymoviehdScraper,
+    oneroomScraper,
   ];
 }
 
@@ -194,6 +202,7 @@ export function gatherAllEmbeds(): Array<Embed> {
     xprimePrimenetEmbed,
     xprimeVolkswagenEmbed,
     xprimeHarbourEmbed,
+    xprimePhoenixEmbed,
     ConsumetVidCloudScraper,
     ConsumetStreamSBScraper,
     ConsumetVidStreamingScraper,
@@ -216,5 +225,7 @@ export function gatherAllEmbeds(): Array<Embed> {
     streamwishSpanishScraper,
     streamwishEnglishScraper,
     streamtapeLatinoScraper,
+    ...cinemaosEmbeds,
+    // ...cinemaosHexaEmbeds,
   ];
 }

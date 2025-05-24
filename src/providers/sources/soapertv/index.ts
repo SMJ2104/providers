@@ -6,7 +6,7 @@ import { Stream } from '@/providers/streams';
 import { compareMedia } from '@/utils/compare';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
-import { convertPlaylistsToDataUrls } from '@/utils/playlist';
+import { createM3U8ProxyUrl } from '@/utils/proxy';
 
 import { InfoResponse } from './types';
 import { SourcererOutput, makeSourcerer } from '../../base';
@@ -104,12 +104,20 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext): Pr
   }
   ctx.progress(90);
 
+  // Headers needed for the M3U8 proxy
+  const headers = {
+    referer: `${baseUrl}${showLink}`,
+    'User-Agent':
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1',
+    'Viewport-Width': '375',
+  };
+
   return {
     embeds: [],
     stream: [
       {
         id: 'primary',
-        playlist: await convertPlaylistsToDataUrls(ctx.proxiedFetcher, `${baseUrl}/${streamResJson.val}`),
+        playlist: createM3U8ProxyUrl(`${baseUrl}/${streamResJson.val}`, headers),
         type: 'hls',
         proxyDepth: 2,
         flags: [flags.CORS_ALLOWED],
@@ -119,7 +127,7 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext): Pr
         ? [
             {
               id: 'backup',
-              playlist: await convertPlaylistsToDataUrls(ctx.proxiedFetcher, `${baseUrl}/${streamResJson.val_bak}`),
+              playlist: createM3U8ProxyUrl(`${baseUrl}/${streamResJson.val_bak}`, headers),
               type: 'hls',
               flags: [flags.CORS_ALLOWED],
               proxyDepth: 2,
@@ -135,8 +143,14 @@ export const soaperTvScraper = makeSourcerer({
   id: 'soapertv',
   name: 'S4MJ 🥨',
   rank: 236,
-  disabled: true, // they done broke it again
+  disabled: false, // they done broke it again
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: universalScraper,
   scrapeShow: universalScraper,
 });
+
+// playlist: await convertPlaylistsToDataUrls(ctx.proxiedFetcher, `${baseUrl}/${streamResJson.val_bak}`, {
+//   'User-Agent':
+//     'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1',
+//   'Viewport-Width': '375',
+// }),

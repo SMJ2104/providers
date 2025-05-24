@@ -40,6 +40,36 @@ const languageMap: Record<string, string> = {
   filipino: 'tl',
   indonesia: 'id',
   اردو: 'ur',
+  English: 'en',
+  Arabic: 'ar',
+  Bosnian: 'bs',
+  Bulgarian: 'bg',
+  Croatian: 'hr',
+  Czech: 'cs',
+  Danish: 'da',
+  Dutch: 'nl',
+  Estonian: 'et',
+  Finnish: 'fi',
+  French: 'fr',
+  German: 'de',
+  Greek: 'el',
+  Hebrew: 'he',
+  Hungarian: 'hu',
+  Indonesian: 'id',
+  Italian: 'it',
+  Norwegian: 'no',
+  Persian: 'fa',
+  Polish: 'pl',
+  Portuguese: 'pt',
+  'Protuguese (BR)': 'pt-br',
+  Romanian: 'ro',
+  Russian: 'ru',
+  Serbian: 'sr',
+  Slovenian: 'sl',
+  Spanish: 'es',
+  Swedish: 'sv',
+  Thai: 'th',
+  Turkish: 'tr',
 };
 
 export const xprimeApolloEmbed = makeEmbed({
@@ -178,6 +208,66 @@ export const xprimePrimenetEmbed = makeEmbed({
           playlist: data.url,
           flags: [flags.CORS_ALLOWED],
           captions: [],
+        },
+      ],
+    };
+  },
+});
+
+export const xprimePhoenixEmbed = makeEmbed({
+  id: 'xprime-phoenix',
+  name: 'Phoenix',
+  rank: 234,
+  async scrape(ctx): Promise<EmbedOutput> {
+    const query = JSON.parse(ctx.url);
+
+    const params = new URLSearchParams();
+    params.append('id', query.tmdbId);
+    params.append('imdb', query.imdbId);
+
+    // For TV shows, add season and episode
+    if (query.type === 'show') {
+      params.append('season', query.season.toString());
+      params.append('episode', query.episode.toString());
+    }
+
+    const url = `https://backend.xprime.tv/phoenix?${params.toString()}`;
+    ctx.progress(50);
+
+    const data = await ctx.fetcher(url);
+
+    if (!data) throw new NotFoundError('No response received');
+    if (data.error) throw new NotFoundError(data.error);
+    if (!data.url) throw new NotFoundError('No stream URL found in response');
+
+    ctx.progress(90);
+
+    // Parse and format captions
+    const captions = data.subtitles
+      ? data.subtitles.map((sub: any) => {
+          // Extract the base label without number suffixes
+          const baseLabel = sub.label.split(' ')[0];
+          // Use mapped ISO code or the original label if not found in the map
+          const langCode = languageMap[baseLabel] || baseLabel.toLowerCase().substring(0, 2);
+
+          return {
+            id: `${sub.label.replace(/\s+/g, '_').toLowerCase()}`,
+            language: langCode,
+            url: sub.file,
+            label: sub.label,
+            type: 'vtt',
+          };
+        })
+      : [];
+
+    return {
+      stream: [
+        {
+          type: 'hls',
+          id: 'primary',
+          playlist: data.url,
+          flags: [flags.CORS_ALLOWED],
+          captions,
         },
       ],
     };
