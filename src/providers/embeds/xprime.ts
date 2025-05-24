@@ -218,6 +218,7 @@ export const xprimePhoenixEmbed = makeEmbed({
   id: 'xprime-phoenix',
   name: 'Phoenix',
   rank: 234,
+  disabled: true,
   async scrape(ctx): Promise<EmbedOutput> {
     const query = JSON.parse(ctx.url);
 
