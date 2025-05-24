@@ -68,7 +68,7 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
 
 export const slidemoviesScraper = makeSourcerer({
   id: 'slidemovies',
-  name: 'SlideMovies',
+  name: 'SlideMovies 😞',
   rank: 135,
   disabled: true,
   flags: [flags.CORS_ALLOWED],

@@ -50,7 +50,7 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
 
 export const hollymoviehdScraper = makeSourcerer({
   id: 'hollymoviehd',
-  name: 'BludClart: HollyMovieHD 🤝',
+  name: 'HollyMovieHD 🥂',
   rank: 180,
   disabled: false,
   flags: [flags.CORS_ALLOWED],

@@ -61,7 +61,7 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
 
 export const oneroomScraper = makeSourcerer({
   id: 'oneroom',
-  name: 'BludClart: OneRoom 🤝',
+  name: 'OneRoom 🦭',
   rank: 179,
   disabled: false,
   flags: [flags.CORS_ALLOWED],
