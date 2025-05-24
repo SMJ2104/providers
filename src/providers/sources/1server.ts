@@ -58,7 +58,7 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
 export const oneServerScraper = makeSourcerer({
   id: '1server',
   name: '1Server 1️⃣',
-  rank: 178,
+  rank: 90,
   disabled: false,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: comboScraper,
