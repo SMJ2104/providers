@@ -107,14 +107,21 @@ export async function scrapeInvidualSource(
 
           // Fall back to OpenSubtitles if no Wyzie subs found
           if (!playableStream.captions.some((caption) => caption.wyziesubs)) {
+            const [imdbId, season, episode] = atob(ops.media.imdbId)
+              .split('.')
+              .map((x, i) => (i === 0 ? x : Number(x) || null));
+            const mediaInfo = {
+              ...ops,
+              media: {
+                type: season && episode ? 'show' : 'movie',
+                imdbId: imdbId?.toString() || '',
+                ...(season && episode ? { season: { number: season }, episode: { number: episode } } : {}),
+              } as ScrapeMedia,
+            };
             playableStream.captions = await addOpenSubtitlesCaptions(
               playableStream.captions,
-              ops,
-              btoa(
-                `${ops.media.imdbId}${
-                  ops.media.type === 'show' ? `.${ops.media.season.number}.${ops.media.episode.number}` : ''
-                }`,
-              ),
+              mediaInfo,
+              ops.media.imdbId,
             );
           }
         }
@@ -172,9 +179,21 @@ export async function scrapeIndividualEmbed(
   const playableStreams = await validatePlayableStreams(output.stream, ops, embedScraper.id);
   if (playableStreams.length === 0) throw new NotFoundError('No playable streams found');
 
-  if (media && !ops.disableOpensubtitles)
+  if (media && !ops.disableOpensubtitles) {
+    const [imdbId, season, episode] = atob(media)
+      .split('.')
+      .map((x, i) => (i === 0 ? x : Number(x) || null));
+    const mediaInfo = {
+      ...ops,
+      media: {
+        type: season && episode ? 'show' : 'movie',
+        imdbId: imdbId?.toString() || '',
+        ...(season && episode ? { season: { number: season }, episode: { number: episode } } : {}),
+      } as ScrapeMedia,
+    };
     for (const playableStream of playableStreams)
-      playableStream.captions = await addOpenSubtitlesCaptions(playableStream.captions, ops, media);
+      playableStream.captions = await addOpenSubtitlesCaptions(playableStream.captions, mediaInfo, media);
+  }
 
   output.stream = playableStreams;
 

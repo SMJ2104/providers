@@ -78,7 +78,7 @@ export const cinemaosScraper = makeSourcerer({
   id: 'cinemaos',
   name: 'CinemaOS 📽️',
   rank: 150,
-  disabled: false,
+  disabled: true,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: comboScraper,
   scrapeShow: comboScraper,

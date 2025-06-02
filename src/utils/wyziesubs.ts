@@ -39,12 +39,11 @@ export async function addWyzieCaptions(
   try {
     const searchParams: any = {
       encoding: 'utf-8',
-      source: ['subdl', 'opensubtitles'],
+      source: 'all',
+      imdb_id: imdbId,
     };
 
-    if (tmdbId && imdbId) {
-      searchParams.imdb_id = imdbId;
-    } else if (tmdbId && !imdbId) {
+    if (tmdbId && !imdbId) {
       searchParams.tmdb_id = typeof tmdbId === 'string' ? parseInt(tmdbId, 10) : tmdbId;
     }
 

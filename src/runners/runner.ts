@@ -11,7 +11,6 @@ import { reorderOnIdList } from '@/utils/list';
 import { addOpenSubtitlesCaptions } from '@/utils/opensubtitles';
 import { requiresProxy, setupProxy } from '@/utils/proxy';
 import { isValidStream, validatePlayableStream } from '@/utils/valid';
-import { addWyzieCaptions } from '@/utils/wyziesubs';
 
 export type RunOutput = {
   sourceId: string;
@@ -119,27 +118,15 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
       // opensubtitles
       if (!ops.disableOpensubtitles) {
         if (ops.media.imdbId) {
-          // Try Wyzie subs first
-          playableStream.captions = await addWyzieCaptions(
+          playableStream.captions = await addOpenSubtitlesCaptions(
             playableStream.captions,
-            ops.media.tmdbId,
-            ops.media.imdbId,
-            ops.media.type === 'show' ? ops.media.season.number : undefined,
-            ops.media.type === 'show' ? ops.media.episode.number : undefined,
+            ops,
+            btoa(
+              `${ops.media.imdbId}${
+                ops.media.type === 'show' ? `.${ops.media.season.number}.${ops.media.episode.number}` : ''
+              }`,
+            ),
           );
-
-          // Fall back to OpenSubtitles if no Wyzie subs found
-          if (!playableStream.captions.some((caption) => caption.wyziesubs)) {
-            playableStream.captions = await addOpenSubtitlesCaptions(
-              playableStream.captions,
-              ops,
-              btoa(
-                `${ops.media.imdbId}${
-                  ops.media.type === 'show' ? `.${ops.media.season.number}.${ops.media.episode.number}` : ''
-                }`,
-              ),
-            );
-          }
         }
       }
 
@@ -197,27 +184,15 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
         // opensubtitles
         if (!ops.disableOpensubtitles) {
           if (ops.media.imdbId) {
-            // Try Wyzie subs first
-            playableStream.captions = await addWyzieCaptions(
+            playableStream.captions = await addOpenSubtitlesCaptions(
               playableStream.captions,
-              ops.media.tmdbId,
-              ops.media.imdbId,
-              ops.media.type === 'show' ? ops.media.season.number : undefined,
-              ops.media.type === 'show' ? ops.media.episode.number : undefined,
+              ops,
+              btoa(
+                `${ops.media.imdbId}${
+                  ops.media.type === 'show' ? `.${ops.media.season.number}.${ops.media.episode.number}` : ''
+                }`,
+              ),
             );
-
-            // Fall back to OpenSubtitles if no Wyzie subs found
-            if (!playableStream.captions.some((caption) => caption.wyziesubs)) {
-              playableStream.captions = await addOpenSubtitlesCaptions(
-                playableStream.captions,
-                ops,
-                btoa(
-                  `${ops.media.imdbId}${
-                    ops.media.type === 'show' ? `.${ops.media.season.number}.${ops.media.episode.number}` : ''
-                  }`,
-                ),
-              );
-            }
           }
         }
         embedOutput.stream = [playableStream];

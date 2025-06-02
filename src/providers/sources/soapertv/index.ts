@@ -79,17 +79,81 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext): Pr
 
   const streamResJson: InfoResponse = JSON.parse(streamRes);
 
+  const languageMap: Record<string, string> = {
+    'chinese - hong kong': 'zh',
+    'chinese - traditional': 'zh',
+    czech: 'cs',
+    danish: 'da',
+    dutch: 'nl',
+    english: 'en',
+    'english - sdh': 'en',
+    finnish: 'fi',
+    french: 'fr',
+    german: 'de',
+    greek: 'el',
+    hungarian: 'hu',
+    italian: 'it',
+    korean: 'ko',
+    norwegian: 'no',
+    polish: 'pl',
+    portuguese: 'pt',
+    'portuguese - brazilian': 'pt',
+    romanian: 'ro',
+    'spanish - european': 'es',
+    'spanish - latin american': 'es',
+    swedish: 'sv',
+    turkish: 'tr',
+    اَلْعَرَبِيَّةُ: 'ar',
+    বাংলা: 'bn',
+    filipino: 'tl',
+    indonesia: 'id',
+    اردو: 'ur',
+    English: 'en',
+    Arabic: 'ar',
+    Bosnian: 'bs',
+    Bulgarian: 'bg',
+    Croatian: 'hr',
+    Czech: 'cs',
+    Danish: 'da',
+    Dutch: 'nl',
+    Estonian: 'et',
+    Finnish: 'fi',
+    French: 'fr',
+    German: 'de',
+    Greek: 'el',
+    Hebrew: 'he',
+    Hungarian: 'hu',
+    Indonesian: 'id',
+    Italian: 'it',
+    Norwegian: 'no',
+    Persian: 'fa',
+    Polish: 'pl',
+    Portuguese: 'pt',
+    'Protuguese (BR)': 'pt-br',
+    Romanian: 'ro',
+    Russian: 'ru',
+    Serbian: 'sr',
+    Slovenian: 'sl',
+    Spanish: 'es',
+    Swedish: 'sv',
+    Thai: 'th',
+    Turkish: 'tr',
+  };
+
   const captions: Caption[] = [];
   if (Array.isArray(streamResJson.subs)) {
     for (const sub of streamResJson.subs) {
       // Some subtitles are named <Language>.srt, some are named <LanguageCode>:hi, or just <LanguageCode>
       let language: string | null = '';
       if (sub.name.includes('.srt')) {
-        language = labelToLanguageCode(sub.name.split('.srt')[0]);
+        const langName = sub.name.split('.srt')[0].toLowerCase().trim();
+        language = languageMap[langName] || labelToLanguageCode(langName);
       } else if (sub.name.includes(':')) {
-        language = sub.name.split(':')[0];
+        const langName = sub.name.split(':')[0].toLowerCase().trim();
+        language = languageMap[langName] || labelToLanguageCode(langName);
       } else {
-        language = sub.name;
+        const langName = sub.name.toLowerCase().trim();
+        language = languageMap[langName] || labelToLanguageCode(langName);
       }
       if (!language) continue;
 
