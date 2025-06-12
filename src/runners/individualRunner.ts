@@ -9,6 +9,7 @@ import { NotFoundError } from '@/utils/errors';
 import { addOpenSubtitlesCaptions } from '@/utils/opensubtitles';
 import { requiresProxy, setupProxy } from '@/utils/proxy';
 import { isValidStream, validatePlayableStreams } from '@/utils/valid';
+import { addWyzieCaptions } from '@/utils/wyziesubs';
 
 export type IndividualSourceRunnerOptions = {
   features: FeatureMap;
@@ -94,15 +95,36 @@ export async function scrapeInvidualSource(
     // opensubtitles
     if (!ops.disableOpensubtitles) {
       for (const playableStream of playableStreams) {
-        playableStream.captions = await addOpenSubtitlesCaptions(
-          playableStream.captions,
-          ops,
-          btoa(
-            `${ops.media.imdbId}${
-              ops.media.type === 'show' ? `.${ops.media.season.number}.${ops.media.episode.number}` : ''
-            }`,
-          ),
-        );
+        // Try Wyzie subs first
+        if (ops.media.imdbId) {
+          playableStream.captions = await addWyzieCaptions(
+            playableStream.captions,
+            ops.media.tmdbId,
+            ops.media.imdbId,
+            ops.media.type === 'show' ? ops.media.season.number : undefined,
+            ops.media.type === 'show' ? ops.media.episode.number : undefined,
+          );
+
+          // Fall back to OpenSubtitles if no Wyzie subs found
+          if (!playableStream.captions.some((caption) => caption.wyziesubs)) {
+            const [imdbId, season, episode] = atob(ops.media.imdbId)
+              .split('.')
+              .map((x, i) => (i === 0 ? x : Number(x) || null));
+            const mediaInfo = {
+              ...ops,
+              media: {
+                type: season && episode ? 'show' : 'movie',
+                imdbId: imdbId?.toString() || '',
+                ...(season && episode ? { season: { number: season }, episode: { number: episode } } : {}),
+              } as ScrapeMedia,
+            };
+            playableStream.captions = await addOpenSubtitlesCaptions(
+              playableStream.captions,
+              mediaInfo,
+              ops.media.imdbId,
+            );
+          }
+        }
       }
     }
     output.stream = playableStreams;

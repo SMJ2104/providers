@@ -1,6 +1,30 @@
 // import { alphaScraper, deltaScraper } from '@/providers/embeds/nsbx';
 // import { astraScraper, novaScraper, orionScraper } from '@/providers/embeds/whvx';
+import {
+  oneServerAnimepaheEmbed,
+  oneServerAnizoneEmbed,
+  oneServerAutoembedEmbed,
+  oneServerFlixhqEmbed,
+  oneServerFoxstreamEmbed,
+  oneServerGokuEmbed,
+  oneServerHianimeEmbed,
+  oneServerPrimeboxEmbed,
+  oneServerVidsrcsuEmbed,
+} from '@/providers/embeds/1server';
 import { cinemaosHexaEmbeds } from '@/providers/embeds/cinemaos';
+import {
+  ConsumetStreamSBScraper,
+  ConsumetStreamTapeScraper,
+  ConsumetVidCloudScraper,
+  ConsumetVidStreamingScraper,
+} from '@/providers/embeds/consumet';
+import { FedAPIPrivateScraper, FedDBScraper } from '@/providers/embeds/fedapi';
+import {
+  hianimeHd1DubEmbed,
+  hianimeHd1SubEmbed,
+  hianimeHd2DubEmbed,
+  hianimeHd2SubEmbed,
+} from '@/providers/embeds/hianime';
 import {
   streamwishEnglishScraper,
   streamwishLatinoScraper,
@@ -8,8 +32,19 @@ import {
 } from '@/providers/embeds/streamwish';
 import { viperScraper } from '@/providers/embeds/viper';
 import { warezcdnembedMp4Scraper } from '@/providers/embeds/warezcdn/mp4';
+import {
+  xprimeApolloEmbed,
+  xprimeFoxEmbed,
+  xprimeHarbourEmbed,
+  xprimeMarantEmbed,
+  xprimePhoenixEmbed,
+  xprimePrimenetEmbed,
+  xprimeStreamboxEmbed,
+  xprimeVolkswagenEmbed,
+} from '@/providers/embeds/xprime';
 import { embedsuScraper } from '@/providers/sources/embedsu';
 import { soaperTvScraper } from '@/providers/sources/soapertv';
+import { uiraliveScraper } from '@/providers/sources/uiralive';
 import { wecimaScraper } from '@/providers/sources/wecima';
 import { Stream } from '@/providers/streams';
 import { IndividualEmbedRunnerOptions } from '@/runners/individualRunner';
@@ -26,7 +61,35 @@ const SKIP_VALIDATION_CHECK_IDS = [
   streamwishLatinoScraper.id,
   streamwishSpanishScraper.id,
   streamwishEnglishScraper.id,
+  uiraliveScraper.id,
   embedsuScraper.id,
+  FedAPIPrivateScraper.id,
+  FedDBScraper.id,
+  xprimeFoxEmbed.id,
+  xprimeApolloEmbed.id,
+  xprimeStreamboxEmbed.id,
+  xprimeMarantEmbed.id,
+  xprimePrimenetEmbed.id,
+  xprimeVolkswagenEmbed.id,
+  xprimeHarbourEmbed.id,
+  xprimePhoenixEmbed.id,
+  ConsumetVidCloudScraper.id,
+  ConsumetStreamSBScraper.id,
+  ConsumetVidStreamingScraper.id,
+  ConsumetStreamTapeScraper.id,
+  hianimeHd1DubEmbed.id,
+  hianimeHd1SubEmbed.id,
+  hianimeHd2DubEmbed.id,
+  hianimeHd2SubEmbed.id,
+  oneServerAutoembedEmbed.id,
+  oneServerVidsrcsuEmbed.id,
+  oneServerPrimeboxEmbed.id,
+  oneServerFoxstreamEmbed.id,
+  oneServerFlixhqEmbed.id,
+  oneServerGokuEmbed.id,
+  oneServerHianimeEmbed.id,
+  oneServerAnimepaheEmbed.id,
+  oneServerAnizoneEmbed.id,
   wecimaScraper.id,
   ...cinemaosHexaEmbeds.map((e) => e.id),
   soaperTvScraper.id,

@@ -30,48 +30,26 @@ export const turbovidScraper = makeEmbed({
     if (!apkey || !xxid) throw new Error('Failed to get required values');
 
     // json isn't parsed by proxiedFetcher due to content-type being text/html
-    const encodedJuiceKey = JSON.parse(
+    const juiceKey = JSON.parse(
       await ctx.proxiedFetcher('/api/cucked/juice_key', {
         baseUrl,
         headers: {
           referer: ctx.url,
-          'User-Agent':
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36',
-          Accept: '*/*',
-          'Accept-Language': 'en-US,en;q=0.9',
-          Connection: 'keep-alive',
-          'Content-Type': 'application/json',
-          'X-Turbo': 'TurboVidClient',
-          'Sec-Fetch-Dest': 'empty',
-          'Sec-Fetch-Mode': 'cors',
-          'Sec-Fetch-Site': 'same-origin',
         },
       }),
     ).juice;
 
-    if (!encodedJuiceKey) throw new Error('Failed to fetch the key');
-
-    const juiceKey = atob(encodedJuiceKey);
+    if (!juiceKey) throw new Error('Failed to fetch the key');
 
     ctx.progress(60);
 
     const data = JSON.parse(
-      await ctx.proxiedFetcher('/api/cucked/the_juice_v2/', {
+      await ctx.proxiedFetcher('/api/cucked/the_juice/', {
         baseUrl,
         query: {
           [apkey]: xxid,
         },
         headers: {
-          'User-Agent':
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36',
-          Accept: '*/*',
-          'Accept-Language': 'en-US,en;q=0.9',
-          Connection: 'keep-alive',
-          'Content-Type': 'application/json',
-          'X-Turbo': 'TurboVidClient',
-          'Sec-Fetch-Dest': 'empty',
-          'Sec-Fetch-Mode': 'cors',
-          'Sec-Fetch-Site': 'same-origin',
           referer: ctx.url,
         },
       }),
