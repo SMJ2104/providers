@@ -279,6 +279,7 @@ export const xprimeFoxEmbed = makeEmbed({
   id: 'xprime-fox',
   name: 'Fox',
   rank: 233,
+  disabled: true,
   async scrape(ctx): Promise<EmbedOutput> {
     const query = JSON.parse(ctx.url);
     const params = new URLSearchParams({
