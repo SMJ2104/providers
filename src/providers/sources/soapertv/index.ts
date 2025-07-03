@@ -205,9 +205,9 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext): Pr
 
 export const soaperTvScraper = makeSourcerer({
   id: 'soapertv',
-  name: 'S4MJ 🥨',
+  name: 'SMJ 🔥',
   rank: 236,
-  disabled: true, // they done broke it again
+  disabled: false, // they done broke it again
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: universalScraper,
   scrapeShow: universalScraper,
